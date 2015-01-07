@@ -1,0 +1,5 @@
+/home/brian/AndroidstudioProjects/Pre-R_Alpha_Prototype/app/build/intermediates/classes/debug
+/home/brian/AndroidstudioProjects/Pre-R_Alpha_Prototype/app/build/intermediates/pre-dexed/debug/support-annotations-21.0.3-1cd1039154f1bb9cc0d4a9da3e8b7ec509fd8b06.jar
+/home/brian/AndroidstudioProjects/Pre-R_Alpha_Prototype/app/build/intermediates/pre-dexed/debug/internal_impl-21.0.3-fe5bcd9eed134fe09bc302fd78c472fec00a1f5f.jar
+/home/brian/AndroidstudioProjects/Pre-R_Alpha_Prototype/app/build/intermediates/pre-dexed/debug/classes-29d14dbd6fe8bebfe3ff0aff9605b1cd78eb9841.jar
+/home/brian/AndroidstudioProjects/Pre-R_Alpha_Prototype/app/build/intermediates/pre-dexed/debug/classes-bfe43f4f48eb562a4539b99ee7efbe9dc35b00ae.jar
