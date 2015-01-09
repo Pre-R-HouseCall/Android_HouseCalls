@@ -11,12 +11,12 @@ public class SplashScreen extends Activity {
 			super.onCreate(savedInstanceState);
 			setContentView(R.layout.activity_splash_screen);
 
-            int myTimer = 1500;
+            int myTimer = 3000;
             new Handler().postDelayed(new Runnable() {
 
                 @Override
                 public void run() {
-                    Intent i = new Intent(SplashScreen.this, MainActivity.class);
+                    Intent i = new Intent(SplashScreen.this, Tutorial.class);
                     startActivity(i);
                     finish(); // close this activity
                 }

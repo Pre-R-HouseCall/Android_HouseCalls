@@ -17,7 +17,7 @@ public class SignUp extends Activity {
 		next.setOnClickListener(new View.OnClickListener() {
         	
             public void onClick(View view) {
-                Intent myIntent = new Intent(view.getContext(), Doctors.class);
+                Intent myIntent = new Intent(view.getContext(), Form.class);
                 startActivityForResult(myIntent, 0);
             }
         });

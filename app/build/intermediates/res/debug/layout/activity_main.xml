@@ -11,7 +11,8 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:text="@string/sign_up_button" />
+        android:text="@string/sign_up_button"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <Button
         android:id="@+id/login_button"
@@ -19,6 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/sign_up_button"
         android:layout_centerHorizontal="true"
-        android:text="@string/login_button" />
+        android:text="@string/login_button"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
-</RelativeLayout><!-- From: file:/home/brian/AndroidstudioProjects/Pre-R_Alpha_Prototype/app/src/main/res/layout/activity_main.xml -->
+</RelativeLayout><!-- From: file:/C:/Users/Winifred/Documents/GitHub/Pre-R_Alpha_Prototype-1/app/src/main/res/layout/activity_main.xml -->
