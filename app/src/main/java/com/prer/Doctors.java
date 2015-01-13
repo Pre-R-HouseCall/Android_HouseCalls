@@ -11,15 +11,26 @@ public class Doctors extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_doctors);
-		
-		ImageButton next = (ImageButton) findViewById(R.id.waitlistform);
-	    next.setOnClickListener(new View.OnClickListener() {
-    	
+        setContentView(R.layout.activity_doctor_list);
+
+        ImageButton form = (ImageButton) findViewById(R.id.doctor3_action);
+        ImageButton bio = (ImageButton) findViewById(R.id.doctor3_profile);
+
+        form.setOnClickListener(new View.OnClickListener() {
+
 	        public void onClick(View view) {
-	            Intent myIntent = new Intent(view.getContext(), Waitlist.class);
+	            Intent myIntent = new Intent(view.getContext(), MainActivity.class);
 	            startActivityForResult(myIntent, 0);
 	        }
 	    });
-	}
+
+        bio.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View view) {
+                Intent myIntent = new Intent(view.getContext(), Bio.class);
+                startActivityForResult(myIntent, 0);
+            }
+        });
+
+    }
 }

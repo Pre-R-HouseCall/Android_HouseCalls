@@ -13,11 +13,11 @@ public class Waitlist extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_waitlist);
 		
-		Button next = (Button) findViewById(R.id.preevalform);
+		Button next = (Button) findViewById(R.id.home);
 	    next.setOnClickListener(new View.OnClickListener() {
     	
 	        public void onClick(View view) {
-	            Intent myIntent = new Intent(view.getContext(), Form.class);
+	            Intent myIntent = new Intent(view.getContext(), Doctors.class);
 	            startActivityForResult(myIntent, 0);
 	        }
 	    });
