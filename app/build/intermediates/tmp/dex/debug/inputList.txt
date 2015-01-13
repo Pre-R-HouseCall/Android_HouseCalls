@@ -1,5 +1,5 @@
-C:\Users\Winifred\Documents\GitHub\Pre-R_Alpha_Prototype-1\app\build\intermediates\classes\debug
-C:\Users\Winifred\Documents\GitHub\Pre-R_Alpha_Prototype-1\app\build\intermediates\pre-dexed\debug\support-annotations-21.0.3-fec92e07ae72ab232ce99c3431013faa8a82a992.jar
-C:\Users\Winifred\Documents\GitHub\Pre-R_Alpha_Prototype-1\app\build\intermediates\pre-dexed\debug\internal_impl-21.0.3-c28898965c9ac1ab0c7ef163c1971a4c0a4301b4.jar
-C:\Users\Winifred\Documents\GitHub\Pre-R_Alpha_Prototype-1\app\build\intermediates\pre-dexed\debug\classes-35d92ce09ba868f1f1566f718e662e362245f243.jar
-C:\Users\Winifred\Documents\GitHub\Pre-R_Alpha_Prototype-1\app\build\intermediates\pre-dexed\debug\classes-4976155d9ecb4f3a2fd1e94baf7db4f633e0add0.jar
+/home/brian/AndroidstudioProjects/Pre-R_Alpha_Prototype_Brian/app/build/intermediates/classes/debug
+/home/brian/AndroidstudioProjects/Pre-R_Alpha_Prototype_Brian/app/build/intermediates/pre-dexed/debug/support-annotations-21.0.3-1cd1039154f1bb9cc0d4a9da3e8b7ec509fd8b06.jar
+/home/brian/AndroidstudioProjects/Pre-R_Alpha_Prototype_Brian/app/build/intermediates/pre-dexed/debug/internal_impl-21.0.3-a41213c0f9deb1f868cd42e70002206bb0c99f41.jar
+/home/brian/AndroidstudioProjects/Pre-R_Alpha_Prototype_Brian/app/build/intermediates/pre-dexed/debug/classes-8bdb2e253589fd0da90862b2642728cb4247330f.jar
+/home/brian/AndroidstudioProjects/Pre-R_Alpha_Prototype_Brian/app/build/intermediates/pre-dexed/debug/classes-8fcc27a2a5f2ffbfa5404b7074e69a16e5792924.jar

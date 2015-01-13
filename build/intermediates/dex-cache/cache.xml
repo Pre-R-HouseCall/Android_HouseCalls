@@ -2,32 +2,32 @@
 <items version="2" >
 
     <item
-        jar="C:\Users\Winifred\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\21.0.3\support-annotations-21.0.3.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="4b74cefe1f0c1b819e7260c8627a14674e37fd35">
-        <dex dex="C:\Users\Winifred\Documents\GitHub\Pre-R_Alpha_Prototype-1\app\build\intermediates\pre-dexed\debug\support-annotations-21.0.3-fec92e07ae72ab232ce99c3431013faa8a82a992.jar" />
-    </item>
-    <item
-        jar="C:\Users\Winifred\Documents\GitHub\Pre-R_Alpha_Prototype-1\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\21.0.3\classes.jar"
+        jar="/home/brian/AndroidstudioProjects/Pre-R_Alpha_Prototype_Brian/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/21.0.3/classes.jar"
         jumboMode="false"
         revision="21.1.2"
         sha1="81d42bf983a8741f4888a6e333e454e4a5e0eeb7">
-        <dex dex="C:\Users\Winifred\Documents\GitHub\Pre-R_Alpha_Prototype-1\app\build\intermediates\pre-dexed\debug\classes-35d92ce09ba868f1f1566f718e662e362245f243.jar" />
+        <dex dex="/home/brian/AndroidstudioProjects/Pre-R_Alpha_Prototype_Brian/app/build/intermediates/pre-dexed/debug/classes-8bdb2e253589fd0da90862b2642728cb4247330f.jar" />
     </item>
     <item
-        jar="C:\Users\Winifred\Documents\GitHub\Pre-R_Alpha_Prototype-1\app\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.3\classes.jar"
+        jar="/home/brian/AndroidstudioProjects/Pre-R_Alpha_Prototype_Brian/app/build/intermediates/exploded-aar/com.android.support/support-v4/21.0.3/classes.jar"
         jumboMode="false"
         revision="21.1.2"
         sha1="2c91c949a45a21cdecf26e03951e46c7beec9ad8">
-        <dex dex="C:\Users\Winifred\Documents\GitHub\Pre-R_Alpha_Prototype-1\app\build\intermediates\pre-dexed\debug\classes-4976155d9ecb4f3a2fd1e94baf7db4f633e0add0.jar" />
+        <dex dex="/home/brian/AndroidstudioProjects/Pre-R_Alpha_Prototype_Brian/app/build/intermediates/pre-dexed/debug/classes-8fcc27a2a5f2ffbfa5404b7074e69a16e5792924.jar" />
     </item>
     <item
-        jar="C:\Users\Winifred\Documents\GitHub\Pre-R_Alpha_Prototype-1\app\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.3\libs\internal_impl-21.0.3.jar"
+        jar="/home/brian/AndroidstudioProjects/Pre-R_Alpha_Prototype_Brian/app/build/intermediates/exploded-aar/com.android.support/support-v4/21.0.3/libs/internal_impl-21.0.3.jar"
         jumboMode="false"
         revision="21.1.2"
         sha1="01ec05bfbafcc07646ba813000bf2ef11742dd03">
-        <dex dex="C:\Users\Winifred\Documents\GitHub\Pre-R_Alpha_Prototype-1\app\build\intermediates\pre-dexed\debug\internal_impl-21.0.3-c28898965c9ac1ab0c7ef163c1971a4c0a4301b4.jar" />
+        <dex dex="/home/brian/AndroidstudioProjects/Pre-R_Alpha_Prototype_Brian/app/build/intermediates/pre-dexed/debug/internal_impl-21.0.3-a41213c0f9deb1f868cd42e70002206bb0c99f41.jar" />
+    </item>
+    <item
+        jar="/opt/android-sdk/extras/android/m2repository/com/android/support/support-annotations/21.0.3/support-annotations-21.0.3.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="4b74cefe1f0c1b819e7260c8627a14674e37fd35">
+        <dex dex="/home/brian/AndroidstudioProjects/Pre-R_Alpha_Prototype_Brian/app/build/intermediates/pre-dexed/debug/support-annotations-21.0.3-1cd1039154f1bb9cc0d4a9da3e8b7ec509fd8b06.jar" />
     </item>
 
 </items>
