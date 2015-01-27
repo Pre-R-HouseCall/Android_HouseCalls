@@ -2,6 +2,7 @@ package com.prer;
 
 import android.content.Intent;
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -20,9 +21,6 @@ import java.io.IOException;
 
 
 public class Bio extends Activity {
-
-    Button form;
-    Button back;
     TextView name;
     TextView description;
     HttpGet httpget;
@@ -30,60 +28,66 @@ public class Bio extends Activity {
     int id;
     String bioQuery;
     HttpResponse response;
-    JSONObject json;
-    String result;
     String url;
+    int isLoaded = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_bio);
-        Button form = (Button) findViewById(R.id.bio_form_button);
-        Button back = (Button) findViewById(R.id.bio_back_button);
+        JSONAsyncTask task = new JSONAsyncTask();
+        task.execute(new String[] { "http://54.191.98.90/api/bioTest/bioQuery.php?doctorID=1" });
+    }
 
-        name = (TextView) findViewById(R.id.name);
-        description = (TextView) findViewById(R.id.description);
-        form = (Button) findViewById(R.id.bio_form_button);
-        back = (Button) findViewById(R.id.bio_back_button);
-        id = 1;
-        bioQuery = "http://54.191.98.90/api/bioTest/bioQuery.php?doctorID=1";
-
-        new Thread(new Runnable(){
-            @Override
-            public void run() {
-                try {
-                    HttpClient client = new DefaultHttpClient();
-                    HttpGet request = new HttpGet(bioQuery);
-                    response = client.execute(request);
-                    result = EntityUtils.toString(response.getEntity());
-                    json = new JSONObject(result);
-                    name.setText(json.getString("FirstName") + " " + json.getString("LastName"));
-                    description.setText(json.getString("Description"));
-                } catch (ClientProtocolException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
+    private class JSONAsyncTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+            try {
+                for (String url: urls) {
+                    HttpGet httpget = new HttpGet(url);
+                    HttpClient httpclient = new DefaultHttpClient();
+                    HttpResponse response = httpclient.execute(httpget);
+                    String result = EntityUtils.toString(response.getEntity());
+                    return result;
                 }
+            } catch (ClientProtocolException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        }).start();
+            return null;
+        }
 
+        protected void onPostExecute(String result) {
+            try {
+                JSONObject json = new JSONObject(result);
+                setContentView(R.layout.activity_bio);
+                TextView name = (TextView) findViewById(R.id.name);
+                TextView description = (TextView) findViewById(R.id.description);
+                Button form = (Button) findViewById(R.id.bio_form_button);
+                Button back = (Button) findViewById(R.id.bio_back_button);
+                name.setText(json.getString("FirstName") + " " + json.getString("LastName"));
+                description.setText(json.getString("Description"));
+                form.setOnClickListener(new View.OnClickListener() {
 
-        form.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View view) {
+                        Intent myIntent = new Intent(view.getContext(), Form.class);
+                        startActivityForResult(myIntent, 0);
+                    }
+                });
 
-            public void onClick(View view) {
-                Intent myIntent = new Intent(view.getContext(), Form.class);
-                startActivityForResult(myIntent, 0);
+                back.setOnClickListener(new View.OnClickListener() {
+
+                    public void onClick(View view) {
+                        Intent myIntent = new Intent(view.getContext(), Doctors.class);
+                        startActivityForResult(myIntent, 0);
+                    }
+                });
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        });
-
-        back.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View view) {
-                Intent myIntent = new Intent(view.getContext(), Doctors.class);
-                startActivityForResult(myIntent, 0);
-            }
-        });
+        }
     }
 }
+
+
+
