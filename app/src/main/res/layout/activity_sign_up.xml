@@ -23,7 +23,7 @@
             android:textColor="#000000" />
 
         <EditText
-            android:id="@+id/txtEmail"
+            android:id="@+id/txtEmail0"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
@@ -39,7 +39,7 @@
             android:textColor="#000000" />
 
         <EditText
-            android:id="@+id/txtPassword"
+            android:id="@+id/txtPassword0"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
@@ -49,7 +49,7 @@
             android:password="true" />
 
         <Button
-            android:id="@+id/btnLogin"
+            android:id="@+id/btnSignUp"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
@@ -58,7 +58,11 @@
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
+<<<<<<< HEAD
             android:id="@+id/tv"
+=======
+            android:id="@+id/tv0"
+>>>>>>> winifredylee-master
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="" />
