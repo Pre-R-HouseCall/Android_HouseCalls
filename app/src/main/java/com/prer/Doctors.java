@@ -1,12 +1,12 @@
 package com.prer;
 
-import android.os.Bundle;
-import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
+import android.os.Bundle;
+import android.content.Intent;
 import android.widget.ImageButton;
 
-public class Doctors extends ActionBarActivity {
+public class Doctors extends ActionBarActivity  {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,7 +19,7 @@ public class Doctors extends ActionBarActivity {
         form.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {
-                Intent myIntent = new Intent(view.getContext(), Login.class);
+                Intent myIntent = new Intent(view.getContext(), MainActivity.class);
                 startActivityForResult(myIntent, 0);
             }
         });

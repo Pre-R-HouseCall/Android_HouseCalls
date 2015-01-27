@@ -70,7 +70,7 @@ public class Bio extends ActionBarActivity {
                 form.setOnClickListener(new View.OnClickListener() {
 
                     public void onClick(View view) {
-                        Intent myIntent = new Intent(view.getContext(), Form.class);
+                        Intent myIntent = new Intent(view.getContext(), MainActivity.class);
                         startActivityForResult(myIntent, 0);
                     }
                 });
