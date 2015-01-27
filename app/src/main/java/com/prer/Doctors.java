@@ -1,12 +1,12 @@
 package com.prer;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.content.Intent;
+import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.ImageButton;
 
-public class Doctors extends Activity {
+public class Doctors extends ActionBarActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
