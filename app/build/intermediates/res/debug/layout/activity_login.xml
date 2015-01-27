@@ -52,10 +52,10 @@
             android:id="@+id/btnLogin"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:text="Login" />
+            android:text="Login"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
     </LinearLayout>
 
 </RelativeLayout>
-<!-- From: file:/home/brian/AndroidstudioProjects/Pre-R_Alpha_Prototype/app/src/main/res/layout/activity_login.xml -->
+<!-- From: file:/home/brian/AndroidstudioProjects/Pre-R_Alpha_Prototype_Brian/app/src/main/res/layout/activity_login.xml -->

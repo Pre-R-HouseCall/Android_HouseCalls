@@ -3,8 +3,7 @@
 
     <string name="app_name">Pre-R_Alpha_Prototype</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_slash_screen">SlashScreenActivity</string>
-    <string name="title_activity_splash_screen">SplashScreen</string>
+    <string name="title_activity_splash_screen">SlashScreenActivity</string>
     <string name="login_button">Login</string>
     <string name="login_hint">Enter username</string>
     <string name="password_hint">Enter password</string>
@@ -20,5 +19,7 @@
     <string name="title_activity_doctors">Doctors</string>
     <string name="title_activity_waitlist">Waitlist</string>
     <string name="title_activity_sign_up">SignUp</string>
+    <string name="title_activity_tutorial">TutorialActivity</string>
+    <string name="title_activity_bio">Bio</string>
 
 </resources>

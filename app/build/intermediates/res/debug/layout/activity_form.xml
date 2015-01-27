@@ -81,11 +81,11 @@
 	        android:textAppearance="?android:attr/textAppearanceMedium" />
 
 	    <Button
-	        android:id="@+id/btnDone"
+	        android:id="@+id/done_button"
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
 	        android:text="Done"
 	        android:textAppearance="?android:attr/textAppearanceMedium" />
 	</LinearLayout>
 
-</ScrollView><!-- From: file:/home/brian/AndroidstudioProjects/Pre-R_Alpha_Prototype/app/src/main/res/layout/activity_form.xml -->
+</ScrollView><!-- From: file:/home/brian/AndroidstudioProjects/Pre-R_Alpha_Prototype_Brian/app/src/main/res/layout/activity_form.xml -->

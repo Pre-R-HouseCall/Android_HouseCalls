@@ -54,7 +54,9 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:text="Sign Up" />
+            android:text="Sign Up"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
     </LinearLayout>
 
-</RelativeLayout><!-- From: file:/home/brian/AndroidstudioProjects/Pre-R_Alpha_Prototype/app/src/main/res/layout/activity_sign_up.xml -->
+</RelativeLayout><!-- From: file:/home/brian/AndroidstudioProjects/Pre-R_Alpha_Prototype_Brian/app/src/main/res/layout/activity_sign_up.xml -->
