@@ -8,10 +8,10 @@ import android.widget.Button;
 
 public class Form extends Activity {
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_form);
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_form);
 
         Button done = (Button) findViewById(R.id.done_button);
         done.setOnClickListener(new View.OnClickListener() {
@@ -21,5 +21,5 @@ public class Form extends Activity {
                 startActivityForResult(myIntent, 0);
             }
         });
-    }
+	}
 }

@@ -13,7 +13,7 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
-import android.app.Activity;
+import android.support.v7.app.ActionBarActivity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -26,7 +26,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class SignUp extends Activity {
+public class SignUp extends ActionBarActivity {
     Button b;
     EditText et,pass;
     TextView tv;

@@ -8,9 +8,9 @@ import android.widget.ImageButton;
 
 public class Doctors extends ActionBarActivity  {
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_doctor_list);
 
         ImageButton form = (ImageButton) findViewById(R.id.doctor3_action);
@@ -18,11 +18,11 @@ public class Doctors extends ActionBarActivity  {
 
         form.setOnClickListener(new View.OnClickListener() {
 
-            public void onClick(View view) {
-                Intent myIntent = new Intent(view.getContext(), MainActivity.class);
-                startActivityForResult(myIntent, 0);
-            }
-        });
+	        public void onClick(View view) {
+	            Intent myIntent = new Intent(view.getContext(), MainActivity.class);
+	            startActivityForResult(myIntent, 0);
+	        }
+	    });
 
         bio.setOnClickListener(new View.OnClickListener() {
 
