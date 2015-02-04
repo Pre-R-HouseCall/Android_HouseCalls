@@ -96,7 +96,7 @@ public class SignUp extends ActionBarActivity {
                     }
                 });
 
-                startActivity(new Intent(SignUp.this, Form.class));
+                startActivity(new Intent(SignUp.this, Login.class));
             }
 
         }catch(Exception e){
@@ -110,7 +110,7 @@ public class SignUp extends ActionBarActivity {
             public void run() {
                 AlertDialog.Builder builder = new AlertDialog.Builder(SignUp.this);
                 builder.setTitle("SignUp Error:");
-                builder.setMessage("Invalid Required Field(s). Try Again.")
+                builder.setMessage("Invalid Username/Password. Try Again.")
                         .setCancelable(false)
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {

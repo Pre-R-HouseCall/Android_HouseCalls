@@ -17,6 +17,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
@@ -36,6 +37,8 @@ public class Login extends ActionBarActivity {
     HttpClient httpclient;
     List<NameValuePair> nameValuePairs;
     ProgressDialog dialog = null;
+    String username;
+    String password;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +49,15 @@ public class Login extends ActionBarActivity {
         et = (EditText) findViewById(R.id.txtEmail);
         pass = (EditText) findViewById(R.id.txtPassword);
         tv = (TextView)findViewById(R.id.tv);
+
+        SharedPreferences logPrefs = getSharedPreferences("loginDetails", 0);
+        username = logPrefs.getString("username", null);
+
+        if (username != null) {
+            password = logPrefs.getString("password", null);
+            et.setText(username);
+            pass.setText(password);
+        }
 
         b.setOnClickListener(new OnClickListener() {
             @Override
@@ -63,13 +75,18 @@ public class Login extends ActionBarActivity {
 
     void login(){
         try{
+            if (!username.equals(et.getText().toString().trim())) {
+                username = et.getText().toString().trim();
+                password = pass.getText().toString().trim();
+            }
+
             httpclient=new DefaultHttpClient();
             httppost= new HttpPost("http://54.191.98.90/api/test1/check.php"); // make sure the url is correct.
             //add your data
             nameValuePairs = new ArrayList<NameValuePair>(2);
             // Always use the same variable name for posting i.e the android side variable name and php side variable name should be similar,
-            nameValuePairs.add(new BasicNameValuePair("username",et.getText().toString().trim()));  // $Edittext_value = $_POST['Edittext_value'];
-            nameValuePairs.add(new BasicNameValuePair("password",pass.getText().toString().trim()));
+            nameValuePairs.add(new BasicNameValuePair("username", username));  // $Edittext_value = $_POST['Edittext_value'];
+            nameValuePairs.add(new BasicNameValuePair("password", password));
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
             //Execute HTTP Post Request
             response=httpclient.execute(httppost);
@@ -86,6 +103,12 @@ public class Login extends ActionBarActivity {
             });
 
             if(response.equalsIgnoreCase("User Found")){
+                SharedPreferences sp = getSharedPreferences("loginDetails", 0);
+                SharedPreferences.Editor spEdit = sp.edit();
+                spEdit.putString("username", username);
+                spEdit.putString("password", password);
+                spEdit.commit();
+
                 runOnUiThread(new Runnable() {
                     public void run() {
                         Toast.makeText(Login.this,"Login Success", Toast.LENGTH_SHORT).show();
@@ -97,7 +120,7 @@ public class Login extends ActionBarActivity {
                 showAlert();
             }
 
-        }catch(Exception e){
+        } catch(Exception e) {
             dialog.dismiss();
             System.out.println("Exception : " + e.getMessage());
         }
@@ -108,7 +131,7 @@ public class Login extends ActionBarActivity {
             public void run() {
                 AlertDialog.Builder builder = new AlertDialog.Builder(Login.this);
                 builder.setTitle("Login Error.");
-                builder.setMessage("User not Found.")
+                builder.setMessage("Invalid Username/Password. Try Again.")
                         .setCancelable(false)
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
