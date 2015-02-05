@@ -1,6 +1,8 @@
 package com.prer;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -92,21 +94,42 @@ public class Form extends Activity {
             final String response = httpclient.execute(httppost, responseHandler);
             System.out.println(response);
 
-            SharedPreferences pref = getSharedPreferences("formDetails", 0);
-            SharedPreferences.Editor editor = pref.edit();
-            editor.putString("name", name);
-            editor.putString("number", number);
-            editor.putString("medInfo", medInfo);
-            editor.commit();
+            if (response.equalsIgnoreCase("Form added\n")) {
+                SharedPreferences pref = getSharedPreferences("formDetails", 0);
+                SharedPreferences.Editor editor = pref.edit();
+                editor.putString("name", name);
+                editor.putString("number", number);
+                editor.putString("medInfo", medInfo);
+                editor.commit();
 
-            runOnUiThread(new Runnable() {
-                public void run() {
-                    Toast.makeText(Form.this, "Form Sent", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(Form.this, Waitlist.class));
-                }
-            });
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        Toast.makeText(Form.this, "Form Sent", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(Form.this, Waitlist.class));
+                    }
+                });
+            } else {
+                showAlert();
+            }
         } catch(Exception e) {
             System.out.println("Exception : " + e.getMessage());
         }
+    }
+
+    public void showAlert() {
+        Form.this.runOnUiThread(new Runnable() {
+            public void run() {
+                AlertDialog.Builder builder = new AlertDialog.Builder(Form.this);
+                builder.setTitle("Error: ");
+                builder.setMessage("Missing Name, Number, or Symptoms. Try Again.")
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        });
     }
 }
