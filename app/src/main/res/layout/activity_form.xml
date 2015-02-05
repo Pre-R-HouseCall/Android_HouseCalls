@@ -35,12 +35,12 @@
 	    <TextView
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:text="Preferred Contact Info (email, txt, or call):"
+	        android:text="Phone # (no -, /, or spaces):"
 	        android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="#ff000000" />
 
 	    <EditText
-            android:id="@+id/formContact"
+            android:id="@+id/formNumber"
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
             android:minHeight="30dp"

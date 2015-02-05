@@ -9,17 +9,30 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class Form extends Activity {
     String name;
-    String contact;
+    String number;
     String medInfo;
-    String symptoms;
-    String other;
     EditText eName;
-    EditText eContact;
+    EditText eNumber;
     EditText eMedInfo;
     EditText eSymptoms;
     EditText eOther;
+    HttpPost httppost;
+    HttpClient httpclient;
+    List<NameValuePair> nameValuePairs;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +40,7 @@ public class Form extends Activity {
 		setContentView(R.layout.activity_form);
 
         eName = (EditText) findViewById(R.id.formName);
-        eContact = (EditText) findViewById(R.id.formContact);
+        eNumber = (EditText) findViewById(R.id.formNumber);
         eMedInfo = (EditText) findViewById(R.id.formMedInfo);
         eSymptoms = (EditText) findViewById(R.id.formSymptoms);
         eOther = (EditText) findViewById(R.id.formOther);
@@ -36,16 +49,12 @@ public class Form extends Activity {
         name = formPrefs.getString("name", null);
 
         if (name != null) {
-            contact = formPrefs.getString("contact", null);
+            number = formPrefs.getString("number", null);
             medInfo = formPrefs.getString("medInfo", null);
-            symptoms = formPrefs.getString("symptoms", null);
-            other = formPrefs.getString("other", null);
 
             eName.setText(name);
-            eContact.setText(contact);
+            eNumber.setText(number);
             eMedInfo.setText(medInfo);
-            eSymptoms.setText(symptoms);
-            eOther.setText(other);
         }
 
         Button done = (Button) findViewById(R.id.done_button);
@@ -61,20 +70,43 @@ public class Form extends Activity {
 	}
 
     void form() {
-        SharedPreferences sp = getSharedPreferences("formDetails", 0);
-        SharedPreferences.Editor spEdit = sp.edit();
-        spEdit.putString("name", name);
-        spEdit.putString("contact", contact);
-        spEdit.putString("medInfo", medInfo);
-        spEdit.putString("symptoms", symptoms);
-        spEdit.putString("other", other);
-        spEdit.commit();
+        try {
+            name = eName.getText().toString().trim();
+            number = eNumber.getText().toString().trim();
+            medInfo = eMedInfo.getText().toString().trim();
 
-        runOnUiThread(new Runnable() {
-            public void run() {
-                Toast.makeText(Form.this, "Form Sent", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(Form.this, Waitlist.class));
-            }
-        });
+            httpclient=new DefaultHttpClient();
+            httppost= new HttpPost("http://54.191.98.90/api/test1/add_form.php"); // make sure the url is correct.
+            //add your data
+            nameValuePairs = new ArrayList<NameValuePair>(2);
+            // Always use the same variable name for posting i.e the android side variable name and php side variable name should be similar,
+            nameValuePairs.add(new BasicNameValuePair("name", name));  // $Edittext_value = $_POST['Edittext_value'];
+            nameValuePairs.add(new BasicNameValuePair("number", number));
+            nameValuePairs.add(new BasicNameValuePair("medInfo", medInfo));
+            nameValuePairs.add(new BasicNameValuePair("symptoms", eSymptoms.getText().toString().trim()));
+            nameValuePairs.add(new BasicNameValuePair("other", eOther.getText().toString().trim()));
+            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+            //Execute HTTP Post Request
+            ResponseHandler<String> responseHandler = new BasicResponseHandler();
+            final String response = httpclient.execute(httppost, responseHandler);
+            System.out.println(response);
+
+            SharedPreferences pref = getSharedPreferences("formDetails", 0);
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putString("name", name);
+            editor.putString("number", number);
+            editor.putString("medInfo", medInfo);
+            editor.commit();
+
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    Toast.makeText(Form.this, "Form Sent", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(Form.this, Waitlist.class));
+                }
+            });
+        } catch(Exception e) {
+            System.out.println("Exception : " + e.getMessage());
+        }
     }
 }
