@@ -1,6 +1,7 @@
 package com.prer;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -21,19 +22,16 @@ import java.io.IOException;
 
 
 public class Bio extends ActionBarActivity {
-    TextView name;
-    TextView description;
-    HttpGet httpget;
-    HttpClient httpclient;
-    int id;
-    String bioQuery;
-    HttpResponse response;
-    String url;
-    int isLoaded = 0;
+    String username;
+    Intent myIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SharedPreferences logPrefs = getSharedPreferences("loginDetails", 0);
+        username = logPrefs.getString("username", null);
+
         JSONAsyncTask task = new JSONAsyncTask();
         task.execute(new String[] { "http://54.191.98.90/api/bioTest/bioQuery.php?doctorID=1" });
     }
@@ -67,10 +65,16 @@ public class Bio extends ActionBarActivity {
                 Button back = (Button) findViewById(R.id.bio_back_button);
                 name.setText(json.getString("FirstName") + " " + json.getString("LastName"));
                 description.setText(json.getString("Description"));
+
                 form.setOnClickListener(new View.OnClickListener() {
 
                     public void onClick(View view) {
-                        Intent myIntent = new Intent(view.getContext(), MainActivity.class);
+                        if (username != null) {
+                            myIntent = new Intent(view.getContext(), Form.class);
+                        } else {
+                            myIntent = new Intent(view.getContext(), MainActivity.class);
+                        }
+
                         startActivityForResult(myIntent, 0);
                     }
                 });

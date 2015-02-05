@@ -50,15 +50,6 @@ public class Login extends ActionBarActivity {
         pass = (EditText) findViewById(R.id.txtPassword);
         tv = (TextView)findViewById(R.id.tv);
 
-        SharedPreferences logPrefs = getSharedPreferences("loginDetails", 0);
-        username = logPrefs.getString("username", null);
-
-        if (username != null) {
-            password = logPrefs.getString("password", null);
-            et.setText(username);
-            pass.setText(password);
-        }
-
         b.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -75,10 +66,8 @@ public class Login extends ActionBarActivity {
 
     void login(){
         try{
-            if (!username.equals(et.getText().toString().trim())) {
-                username = et.getText().toString().trim();
-                password = pass.getText().toString().trim();
-            }
+            username = et.getText().toString().trim();
+            password = pass.getText().toString().trim();
 
             httpclient=new DefaultHttpClient();
             httppost= new HttpPost("http://54.191.98.90/api/test1/check.php"); // make sure the url is correct.
