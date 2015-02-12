@@ -10,7 +10,7 @@
     tools:context="${relativePackage}.${activityClass}" >
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/waitroomPosition"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="You are 5th in line for Dr. Slishman."
