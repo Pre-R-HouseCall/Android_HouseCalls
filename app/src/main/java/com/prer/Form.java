@@ -94,7 +94,7 @@ public class Form extends Activity {
             final String response = httpclient.execute(httppost, responseHandler);
             System.out.println(response);
 
-            if (response.equalsIgnoreCase("Form added\n")) {
+            if (response.equalsIgnoreCase("Form added\n") || response.equalsIgnoreCase("Form updated\n")) {
                 SharedPreferences pref = getSharedPreferences("formDetails", 0);
                 SharedPreferences.Editor editor = pref.edit();
                 editor.putString("name", name);
@@ -104,7 +104,11 @@ public class Form extends Activity {
 
                 runOnUiThread(new Runnable() {
                     public void run() {
-                        Toast.makeText(Form.this, "Form Sent", Toast.LENGTH_SHORT).show();
+                        if (response.equalsIgnoreCase("Form added\n")) {
+                            Toast.makeText(Form.this, "Form Sent", Toast.LENGTH_SHORT).show();
+                        } else{
+                            Toast.makeText(Form.this, "Form Updated", Toast.LENGTH_SHORT).show();
+                        }
                         startActivity(new Intent(Form.this, Waitlist.class));
                     }
                 });
