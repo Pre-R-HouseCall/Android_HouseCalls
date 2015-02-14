@@ -35,6 +35,8 @@ public class Form extends Activity {
     HttpPost httppost;
     HttpClient httpclient;
     List<NameValuePair> nameValuePairs;
+    int userID;
+    int docID;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +48,10 @@ public class Form extends Activity {
         eMedInfo = (EditText) findViewById(R.id.formMedInfo);
         eSymptoms = (EditText) findViewById(R.id.formSymptoms);
         eOther = (EditText) findViewById(R.id.formOther);
+
+        SharedPreferences logPrefs = getSharedPreferences("loginDetails", 0);
+        userID = logPrefs.getInt("userID", -1);
+        docID = logPrefs.getInt("docID", -1);
 
         SharedPreferences formPrefs = getSharedPreferences("formDetails", 0);
         name = formPrefs.getString("name", null);
@@ -87,6 +93,8 @@ public class Form extends Activity {
             nameValuePairs.add(new BasicNameValuePair("medInfo", medInfo));
             nameValuePairs.add(new BasicNameValuePair("symptoms", eSymptoms.getText().toString().trim()));
             nameValuePairs.add(new BasicNameValuePair("other", eOther.getText().toString().trim()));
+            nameValuePairs.add(new BasicNameValuePair("userID", String.valueOf(userID)));
+            nameValuePairs.add(new BasicNameValuePair("docID", String.valueOf(docID)));
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
             //Execute HTTP Post Request

@@ -12,6 +12,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONObject;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -77,13 +78,14 @@ public class Login extends ActionBarActivity {
             nameValuePairs.add(new BasicNameValuePair("username", username));  // $Edittext_value = $_POST['Edittext_value'];
             nameValuePairs.add(new BasicNameValuePair("password", password));
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-            //Execute HTTP Post Request
+            // Execute HTTP Post Request
             response=httpclient.execute(httppost);
 
-            // edited by James from coderzheaven.. from here....
+            // Execute rest of script
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
             final String response = httpclient.execute(httppost, responseHandler);
             System.out.println("Response : " + response);
+
             runOnUiThread(new Runnable() {
                 public void run() {
                     tv.setText("Response from PHP : " + response);
@@ -91,11 +93,14 @@ public class Login extends ActionBarActivity {
                 }
             });
 
-            if(response.equalsIgnoreCase("User Found")){
+            if(!response.equalsIgnoreCase("No Such User Found")){
+                JSONObject json = new JSONObject(response);
+
                 SharedPreferences sp = getSharedPreferences("loginDetails", 0);
                 SharedPreferences.Editor spEdit = sp.edit();
                 spEdit.putString("username", username);
                 spEdit.putString("password", password);
+                spEdit.putInt("userID", json.getInt("id"));
                 spEdit.commit();
 
                 runOnUiThread(new Runnable() {

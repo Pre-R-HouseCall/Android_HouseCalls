@@ -9,6 +9,8 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
 public class Doctors extends ActionBarActivity  {
     String username;
     Intent myIntent;
@@ -41,6 +43,26 @@ public class Doctors extends ActionBarActivity  {
                 });
             }
         });
+
+
+
+        // response is the json string sent back from the Doctors database
+//        JSONObject json = new JSONObject(response);
+
+        SharedPreferences sp = getSharedPreferences("loginDetails", 0);
+        SharedPreferences.Editor spEdit = sp.edit();
+
+        // docID is the key name in the "loginDetails"
+        // Assuming an entry from the Doctor database is json
+        // json.getInt("DoctorId") places the value of DoctorId into docID
+//        spEdit.putInt("docID", json.getInt("DoctorId"));
+
+        // ex: comment out the json lines and hardcode DoctorID
+        spEdit.putInt("docID", 3);
+        spEdit.commit();
+
+
+
 
         form.setOnClickListener(new View.OnClickListener() {
 
