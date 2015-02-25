@@ -25,10 +25,7 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-<<<<<<< HEAD
 
-=======
->>>>>>> parent of e8928e4... doctor list works with rest of app now
         <activity
             android:name=".Tutorial"
             android:label="Tutorial" >
@@ -51,10 +48,6 @@
             android:label="@string/title_activity_login" >
         </activity>
         <activity
-            android:name=".Email"
-            android:label="@string/title_activity_email" >
-        </activity>
-        <activity
             android:name=".Form"
             android:label="@string/title_activity_form" >
         </activity>
@@ -74,10 +67,7 @@
             android:name=".Bio"
             android:label="@string/title_activity_bio" >
         </activity>
-<<<<<<< HEAD
 
-=======
->>>>>>> parent of e8928e4... doctor list works with rest of app now
     </application>
 
 </manifest>
