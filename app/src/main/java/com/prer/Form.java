@@ -23,6 +23,8 @@ import org.apache.http.message.BasicNameValuePair;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.lang.Integer.parseInt;
+
 public class Form extends Activity {
     String name;
     String number;
@@ -36,7 +38,6 @@ public class Form extends Activity {
     HttpClient httpclient;
     List<NameValuePair> nameValuePairs;
     int userID;
-    int docID;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +52,6 @@ public class Form extends Activity {
 
         SharedPreferences logPrefs = getSharedPreferences("loginDetails", 0);
         userID = logPrefs.getInt("userID", -1);
-        docID = logPrefs.getInt("docID", -1);
 
         SharedPreferences formPrefs = getSharedPreferences("formDetails", 0);
         name = formPrefs.getString("name", null);
@@ -79,11 +79,15 @@ public class Form extends Activity {
 
     void form() {
         try {
+            Intent intent = getIntent();
+            String docId = intent.getStringExtra("docId");
+
             name = eName.getText().toString().trim();
             number = eNumber.getText().toString().trim();
             medInfo = eMedInfo.getText().toString().trim();
 
             httpclient=new DefaultHttpClient();
+            // WRITE A SCRIPT AND PASS IT "docId" TO SEND THE FORM ONLY TO THAT DOCTOR
             httppost= new HttpPost("http://54.191.98.90/api/test1/add_form.php"); // make sure the url is correct.
             //add your data
             nameValuePairs = new ArrayList<NameValuePair>(2);
@@ -94,7 +98,7 @@ public class Form extends Activity {
             nameValuePairs.add(new BasicNameValuePair("symptoms", eSymptoms.getText().toString().trim()));
             nameValuePairs.add(new BasicNameValuePair("other", eOther.getText().toString().trim()));
             nameValuePairs.add(new BasicNameValuePair("userID", String.valueOf(userID)));
-            nameValuePairs.add(new BasicNameValuePair("docID", String.valueOf(docID)));
+            nameValuePairs.add(new BasicNameValuePair("docID", docId));
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
             //Execute HTTP Post Request
@@ -112,11 +116,7 @@ public class Form extends Activity {
 
                 runOnUiThread(new Runnable() {
                     public void run() {
-                        if (response.equalsIgnoreCase("Form added\n")) {
-                            Toast.makeText(Form.this, "Form Sent", Toast.LENGTH_SHORT).show();
-                        } else{
-                            Toast.makeText(Form.this, "Form Updated", Toast.LENGTH_SHORT).show();
-                        }
+                        Toast.makeText(Form.this, "Form Sent", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(Form.this, Waitlist.class));
                     }
                 });

@@ -1,89 +1,98 @@
 package com.prer;
 
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.os.Bundle;
 import android.content.Intent;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.ArrayList;
+
+import static com.prer.R.layout.doctor_item;
 
 public class Doctors extends ActionBarActivity  {
     String username;
-    Intent myIntent;
     SharedPreferences logPrefs;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_doctor_list);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-        ImageButton form = (ImageButton) findViewById(R.id.doctor3_action);
-        ImageButton bio = (ImageButton) findViewById(R.id.doctor3_profile);
-        Button logout = (Button) findViewById(R.id.logout);
-
-        logPrefs = getSharedPreferences("loginDetails", 0);
-        username = logPrefs.getString("username", null);
-
-        logout.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View view) {
-                SharedPreferences.Editor editor = logPrefs.edit();
-                editor.clear();
-                editor.commit();
-                username = null;
-
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                        Toast.makeText(Doctors.this, "Logged Out", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-        });
-
-
-
-        // response is the json string sent back from the Doctors database
-//        JSONObject json = new JSONObject(response);
-
-        SharedPreferences sp = getSharedPreferences("loginDetails", 0);
-        SharedPreferences.Editor spEdit = sp.edit();
-
-        // docID is the key name in the "loginDetails"
-        // Assuming an entry from the Doctor database is json
-        // json.getInt("DoctorId") places the value of DoctorId into docID
-//        spEdit.putInt("docID", json.getInt("DoctorId"));
-
-        // ex: comment out the json lines and hardcode DoctorID
-        spEdit.putInt("docID", 3);
-        spEdit.commit();
-
-
-
-
-        form.setOnClickListener(new View.OnClickListener() {
-
-	        public void onClick(View view) {
-                if (username != null) {
-                    myIntent = new Intent(view.getContext(), Form.class);
-                } else {
-                    myIntent = new Intent(view.getContext(), MainActivity.class);
-                }
-
-	            startActivityForResult(myIntent, 0);
-	        }
-	    });
-
-        bio.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View view) {
-                Intent myIntent = new Intent(view.getContext(), Bio.class);
-                startActivityForResult(myIntent, 0);
-            }
-        });
-
+        JSONAsyncTask task = new JSONAsyncTask();
+        // Execute task that grabs all doctors
+        task.execute(new String[] { "http://54.191.98.90/api/ios_connect/getAllDoctors.php" });
     }
+
+    private class JSONAsyncTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+            try {
+                for (String url: urls) {
+                    HttpGet httpget = new HttpGet(url);
+                    HttpClient httpclient = new DefaultHttpClient();
+                    HttpResponse response = httpclient.execute(httpget);
+                    String result = EntityUtils.toString(response.getEntity());
+                    return result;
+                }
+            } catch (ClientProtocolException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        protected void onPostExecute(String result) {
+            logPrefs = getSharedPreferences("loginDetails", 0);
+            username = logPrefs.getString("username", null);
+            try {
+                JSONArray json = new JSONArray(result);
+                setContentView(R.layout.activity_doctor_list);
+                ListView listView = (ListView) findViewById(R.id.listView);
+                DoctorAdapter adapter = new DoctorAdapter(Doctors.this, json, username, logPrefs);
+
+                for(int i =0; i < json.length(); i++) {
+                    adapter.getView(i, null, null);
+                }
+                listView.setAdapter(adapter);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            Button logout = (Button) findViewById(R.id.logout);
+            logout.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View view) {
+                    SharedPreferences.Editor editor = logPrefs.edit();
+                    editor.clear();
+                    editor.commit();
+                    username = null;
+                    Toast.makeText(Doctors.this, "Logged Out", Toast.LENGTH_SHORT).show();
+
+                    Intent myIntent = new Intent(view.getContext(), Doctors.class);
+                    startActivityForResult(myIntent, 0);
+                }
+            });
+        }
+    }
+
+
 }

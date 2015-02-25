@@ -24,6 +24,7 @@ import java.io.IOException;
 public class Bio extends ActionBarActivity {
     String username;
     Intent myIntent;
+    String docId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,8 +33,12 @@ public class Bio extends ActionBarActivity {
         SharedPreferences logPrefs = getSharedPreferences("loginDetails", 0);
         username = logPrefs.getString("username", null);
 
+        Intent intent = getIntent();
+        docId = intent.getStringExtra("docId");
+
+        System.out.println("Bio Page - docId = " + docId);
         JSONAsyncTask task = new JSONAsyncTask();
-        task.execute(new String[] { "http://54.191.98.90/api/bioTest/bioQuery.php?doctorID=1" });
+        task.execute(new String[] { "http://54.191.98.90/api/bioTest/bioQuery.php?doctorID=" + docId });
     }
 
     private class JSONAsyncTask extends AsyncTask<String, Void, String> {
@@ -74,7 +79,7 @@ public class Bio extends ActionBarActivity {
                         } else {
                             myIntent = new Intent(view.getContext(), MainActivity.class);
                         }
-
+                        myIntent.putExtra("docId", docId);
                         startActivityForResult(myIntent, 0);
                     }
                 });
