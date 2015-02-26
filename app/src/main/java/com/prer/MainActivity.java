@@ -20,6 +20,15 @@ public class MainActivity extends Activity implements OnClickListener {
 		
 		login_button.setOnClickListener(this);
 		sign_up_button.setOnClickListener(this);
+
+        Button back = (Button) findViewById(R.id.main_back_button);
+        back.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View view) {
+                Intent myIntent = new Intent(view.getContext(), Doctors.class);
+                startActivityForResult(myIntent, 0);
+            }
+        });
 	}
 
 	@Override

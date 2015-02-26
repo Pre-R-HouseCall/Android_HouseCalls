@@ -59,6 +59,15 @@ public class SignUp extends ActionBarActivity {
                 }).start();
             }
         });
+
+        Button back = (Button) findViewById(R.id.signup_back_button);
+        back.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View view) {
+                Intent myIntent = new Intent(view.getContext(), MainActivity.class);
+                startActivityForResult(myIntent, 0);
+            }
+        });
     }
 
     void signUp(){

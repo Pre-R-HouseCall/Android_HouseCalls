@@ -31,6 +31,9 @@ import static com.prer.R.layout.doctor_item;
 public class Doctors extends ActionBarActivity  {
     String username;
     SharedPreferences logPrefs;
+    JSONArray json;
+    ListView listView;
+    DoctorAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,10 +67,10 @@ public class Doctors extends ActionBarActivity  {
             logPrefs = getSharedPreferences("loginDetails", 0);
             username = logPrefs.getString("username", null);
             try {
-                JSONArray json = new JSONArray(result);
+                json = new JSONArray(result);
                 setContentView(R.layout.activity_doctor_list);
-                ListView listView = (ListView) findViewById(R.id.listView);
-                DoctorAdapter adapter = new DoctorAdapter(Doctors.this, json, username, logPrefs);
+                listView = (ListView) findViewById(R.id.listView);
+                adapter = new DoctorAdapter(Doctors.this, json, username, logPrefs);
 
                 for(int i =0; i < json.length(); i++) {
                     adapter.getView(i, null, null);
@@ -87,12 +90,19 @@ public class Doctors extends ActionBarActivity  {
                     username = null;
                     Toast.makeText(Doctors.this, "Logged Out", Toast.LENGTH_SHORT).show();
 
-                    Intent myIntent = new Intent(view.getContext(), Doctors.class);
+                    adapter = new DoctorAdapter(Doctors.this, json, username, logPrefs);
+                    listView.setAdapter(adapter);
+                }
+            });
+
+            Button back = (Button) findViewById(R.id.back_button);
+            back.setOnClickListener(new View.OnClickListener() {
+
+                public void onClick(View view) {
+                    Intent myIntent = new Intent(view.getContext(), Tutorial.class);
                     startActivityForResult(myIntent, 0);
                 }
             });
         }
     }
-
-
 }

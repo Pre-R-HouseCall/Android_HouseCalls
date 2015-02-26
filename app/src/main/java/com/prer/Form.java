@@ -75,6 +75,15 @@ public class Form extends Activity {
                 }).start();
             }
         });
+
+        Button back = (Button) findViewById(R.id.form_back_button);
+        back.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View view) {
+                Intent myIntent = new Intent(view.getContext(), Doctors.class);
+                startActivityForResult(myIntent, 0);
+            }
+        });
 	}
 
     void form() {

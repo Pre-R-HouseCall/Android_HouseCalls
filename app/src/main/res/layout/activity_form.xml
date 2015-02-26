@@ -111,6 +111,21 @@
 	        android:text="Done"
 	        android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="#ff000000" />
+
+        <Button
+            android:id="@+id/form_back_button"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text="Back"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#ff000000" />
+
+        <TextView
+            android:id="@+id/tv"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text=""
+            android:minHeight="70dp" />
 	</LinearLayout>
 
 </ScrollView>

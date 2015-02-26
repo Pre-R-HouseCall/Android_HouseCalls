@@ -59,7 +59,18 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:text="Sign Up"
+            android:textColor="#ff000000"
             android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <Button
+            android:id="@+id/signup_back_button"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:text="Back"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#ff000000" />
 
         <TextView
             android:id="@+id/tv0"

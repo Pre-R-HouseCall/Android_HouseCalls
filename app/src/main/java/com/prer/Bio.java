@@ -2,6 +2,7 @@ package com.prer;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -25,6 +26,7 @@ public class Bio extends ActionBarActivity {
     String username;
     Intent myIntent;
     String docId;
+    JSONObject json;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,12 +64,13 @@ public class Bio extends ActionBarActivity {
 
         protected void onPostExecute(String result) {
             try {
-                JSONObject json = new JSONObject(result);
+                json = new JSONObject(result);
                 setContentView(R.layout.activity_bio);
                 TextView name = (TextView) findViewById(R.id.name);
                 TextView description = (TextView) findViewById(R.id.description);
                 Button form = (Button) findViewById(R.id.bio_form_button);
                 Button back = (Button) findViewById(R.id.bio_back_button);
+                Button donate = (Button) findViewById(R.id.donateBtn);
                 name.setText(json.getString("FirstName") + " " + json.getString("LastName"));
                 description.setText(json.getString("Description"));
 
@@ -81,6 +84,20 @@ public class Bio extends ActionBarActivity {
                         }
                         myIntent.putExtra("docId", docId);
                         startActivityForResult(myIntent, 0);
+                    }
+                });
+
+                donate.setOnClickListener(new View.OnClickListener() {
+
+                    public void onClick(View view) {
+                        try {
+                            System.out.println(json.getString("DonateBtn"));
+
+                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(json.getString("DonateBtn")));
+                            startActivity(browserIntent);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
 

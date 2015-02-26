@@ -63,6 +63,15 @@ public class Login extends ActionBarActivity {
                 }).start();
             }
         });
+
+        Button back = (Button) findViewById(R.id.login_back_button);
+        back.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View view) {
+                Intent myIntent = new Intent(view.getContext(), MainActivity.class);
+                startActivityForResult(myIntent, 0);
+            }
+        });
     }
 
     void login(){

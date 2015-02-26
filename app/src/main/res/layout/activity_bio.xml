@@ -40,6 +40,16 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:text="Fill Out Pre-Eval Form"
+            android:textColor="#ff000000"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <Button
+            android:id="@+id/donateBtn"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textColor="#ff000000"
+            android:text="Make a Donation"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <Button
@@ -48,6 +58,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:text="Back"
+            android:textColor="#ff000000"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
     </LinearLayout>
