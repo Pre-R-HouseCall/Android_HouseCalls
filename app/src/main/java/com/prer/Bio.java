@@ -80,7 +80,7 @@ public class Bio extends ActionBarActivity {
                         if (username != null) {
                             myIntent = new Intent(view.getContext(), Form.class);
                         } else {
-                            myIntent = new Intent(view.getContext(), MainActivity.class);
+                            myIntent = new Intent(view.getContext(), Login.class);
                         }
                         myIntent.putExtra("docId", docId);
                         startActivityForResult(myIntent, 0);

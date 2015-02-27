@@ -68,7 +68,16 @@ public class Login extends ActionBarActivity {
         back.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {
-                Intent myIntent = new Intent(view.getContext(), MainActivity.class);
+                Intent myIntent = new Intent(view.getContext(), Doctors.class);
+                startActivityForResult(myIntent, 0);
+            }
+        });
+
+        Button signup = (Button) findViewById(R.id.btnSignUp);
+        signup.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View view) {
+                Intent myIntent = new Intent(view.getContext(), SignUp.class);
                 startActivityForResult(myIntent, 0);
             }
         });

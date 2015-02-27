@@ -87,7 +87,7 @@ public class DoctorAdapter extends BaseAdapter{
                 if (username != null) {
                     myIntent = new Intent(context, Form.class);
                 } else {
-                    myIntent = new Intent(context, MainActivity.class);
+                    myIntent = new Intent(context, Login.class);
                 }
                 myIntent.putExtra("docId", finalStr_id);
                 context.startActivity(myIntent);
