@@ -41,4 +41,11 @@
         android:text="Return to Doctor List"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Refresh"
+        android:id="@+id/refresh"
+        android:layout_gravity="center_horizontal" />
+
 </LinearLayout>

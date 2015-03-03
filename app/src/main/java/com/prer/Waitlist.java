@@ -5,6 +5,8 @@ import org.apache.http.Header;
 import org.json.JSONObject;
 import org.json.JSONException;
 
+import android.app.NotificationManager;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,7 +16,13 @@ import android.widget.TextView;
 
 public class Waitlist extends ActionBarActivity {
 
-	@Override
+    private int queuePosition;
+    private int mNotifyId;
+    private CharSequence msg;
+    NotificationCompat.Builder mBuilder;
+    NotificationManager mNotifyMgr;
+
+    @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_waitlist);
@@ -28,40 +36,49 @@ public class Waitlist extends ActionBarActivity {
 	        }
 	    });
 
-        queuePosition();
+        Button refresh = (Button) findViewById(R.id.refresh);
+        refresh.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View view) {
+                refresh();
+            }
+        });
+
+        mNotifyId = 001;
+        mNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        getQueuePosition();
 	}
 
-    private void queuePosition() {
-        RequestParams params = new RequestParams("UserId", "1");
+    private void getQueuePosition() {
 
         JsonHttpResponseHandler responseHandler = new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                String queuePosition;
-                int qp;
-                CharSequence title;
+
+                String qp;
                 TextView display = (android.widget.TextView) findViewById(R.id.waitroomPosition);
 
                 try {
-                    queuePosition = response.getString("QueuePosition");
-                    qp = Integer.parseInt(queuePosition);
-                    System.out.println("QueuePosition " + queuePosition);
+                    qp = response.getString("QueuePosition");
+                    queuePosition = Integer.parseInt(qp);
 
-                    if (qp == 1) {
-                        queuePosition = queuePosition.concat("st");
+                    if (queuePosition == 1) {
+                        qp = qp.concat("st");
                     }
-                    else if (qp == 2) {
-                        queuePosition = queuePosition.concat("nd");
+                    else if (queuePosition == 2) {
+                        qp = qp.concat("nd");
                     }
-                    else if (qp == 3) {
-                        queuePosition = queuePosition.concat("rd");
+                    else if (queuePosition == 3) {
+                        qp = qp.concat("rd");
                     }
                     else {
-                        queuePosition = queuePosition.concat("th");
+                        qp = qp.concat("th");
                     }
 
-                    title = new String("You are " + queuePosition + " in line for Dr. Slishman.");
-                    display.setText(title);
+                    msg = new String("You are " + qp + " in line for Dr. Slishman");
+                    display.setText(msg);
+                    createNotif();
                 }
                 catch (JSONException e) {
 
@@ -69,6 +86,20 @@ public class Waitlist extends ActionBarActivity {
             }
         };
 
-        RestClient.get("queuePosition.php", params, responseHandler);
+        RestClient.get(this, "getQueuePosition/1", null, responseHandler);
+    }
+
+    private void createNotif() {
+
+        mBuilder = new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.ic_launcher)
+                        .setContentTitle("Waitroom Position")
+                        .setContentText(msg);
+
+        mNotifyMgr.notify(mNotifyId, mBuilder.build());
+    }
+
+    private void refresh() {
+        //Update screen message?
     }
 }
