@@ -1,13 +1,15 @@
 package com.prer;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -23,17 +25,10 @@ import org.apache.http.message.BasicNameValuePair;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.Integer.parseInt;
-
-public class Form extends Activity {
-    String name;
-    String number;
-    String medInfo;
-    EditText eName;
-    EditText eNumber;
-    EditText eMedInfo;
+public class Form extends ActionBarActivity {
+    String name, email, number, addr, city, state;
+    EditText eName, eEmail, eNumber, eAddr, eCity, eState;
     EditText eSymptoms;
-    EditText eOther;
     HttpPost httppost;
     HttpClient httpclient;
     List<NameValuePair> nameValuePairs;
@@ -43,12 +38,15 @@ public class Form extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_form);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         eName = (EditText) findViewById(R.id.formName);
+        eEmail = (EditText) findViewById(R.id.formEmail);
         eNumber = (EditText) findViewById(R.id.formNumber);
-        eMedInfo = (EditText) findViewById(R.id.formMedInfo);
+        eAddr = (EditText) findViewById(R.id.formAddr);
+        eCity = (EditText) findViewById(R.id.formCity);
+        eState = (EditText) findViewById(R.id.formState);
         eSymptoms = (EditText) findViewById(R.id.formSymptoms);
-        eOther = (EditText) findViewById(R.id.formOther);
 
         SharedPreferences logPrefs = getSharedPreferences("loginDetails", 0);
         userID = logPrefs.getInt("userID", -1);
@@ -57,16 +55,31 @@ public class Form extends Activity {
         name = formPrefs.getString("name", null);
 
         if (name != null) {
+            email = formPrefs.getString("email", null);
             number = formPrefs.getString("number", null);
-            medInfo = formPrefs.getString("medInfo", null);
+            addr = formPrefs.getString("addr", null);
+            city = formPrefs.getString("city", null);
+            state = formPrefs.getString("state", null);
 
             eName.setText(name);
+            eEmail.setText(email);
             eNumber.setText(number);
-            eMedInfo.setText(medInfo);
+            eAddr.setText(addr);
+            eCity.setText(city);
+            eState.setText(state);
         }
 
-        Button done = (Button) findViewById(R.id.done_button);
-        done.setOnClickListener(new View.OnClickListener() {
+        CheckBox checkBox = (CheckBox) findViewById(R.id.checkBox);
+        checkBox.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                if (((CheckBox) view).isChecked()) {
+                    check();
+                }
+            }
+        });
+
+        Button callBtn = (Button) findViewById(R.id.callBtn);
+        callBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 new Thread(new Runnable() {
                     public void run() {
@@ -75,16 +88,7 @@ public class Form extends Activity {
                 }).start();
             }
         });
-
-        Button back = (Button) findViewById(R.id.form_back_button);
-        back.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View view) {
-                Intent myIntent = new Intent(view.getContext(), Doctors.class);
-                startActivityForResult(myIntent, 0);
-            }
-        });
-	}
+    }
 
     void form() {
         try {
@@ -92,8 +96,11 @@ public class Form extends Activity {
             String docId = intent.getStringExtra("docId");
 
             name = eName.getText().toString().trim();
+            email = eEmail.getText().toString().trim();
             number = eNumber.getText().toString().trim();
-            medInfo = eMedInfo.getText().toString().trim();
+            addr = eAddr.getText().toString().trim();
+            city = eCity.getText().toString().trim();
+            state = eState.getText().toString().trim();
 
             httpclient=new DefaultHttpClient();
             // WRITE A SCRIPT AND PASS IT "docId" TO SEND THE FORM ONLY TO THAT DOCTOR
@@ -102,10 +109,12 @@ public class Form extends Activity {
             nameValuePairs = new ArrayList<NameValuePair>(2);
             // Always use the same variable name for posting i.e the android side variable name and php side variable name should be similar,
             nameValuePairs.add(new BasicNameValuePair("name", name));  // $Edittext_value = $_POST['Edittext_value'];
+            nameValuePairs.add(new BasicNameValuePair("email", email));
             nameValuePairs.add(new BasicNameValuePair("number", number));
-            nameValuePairs.add(new BasicNameValuePair("medInfo", medInfo));
+            nameValuePairs.add(new BasicNameValuePair("addr", addr));
+            nameValuePairs.add(new BasicNameValuePair("city", city));
+            nameValuePairs.add(new BasicNameValuePair("state", state));
             nameValuePairs.add(new BasicNameValuePair("symptoms", eSymptoms.getText().toString().trim()));
-            nameValuePairs.add(new BasicNameValuePair("other", eOther.getText().toString().trim()));
             nameValuePairs.add(new BasicNameValuePair("userID", String.valueOf(userID)));
             nameValuePairs.add(new BasicNameValuePair("docID", docId));
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
@@ -115,12 +124,15 @@ public class Form extends Activity {
             final String response = httpclient.execute(httppost, responseHandler);
             System.out.println(response);
 
-            if (response.equalsIgnoreCase("Form added\n") || response.equalsIgnoreCase("Form updated\n")) {
+            if (response.contains("Form added") || response.contains("Form updated")) {
                 SharedPreferences pref = getSharedPreferences("formDetails", 0);
                 SharedPreferences.Editor editor = pref.edit();
                 editor.putString("name", name);
+                editor.putString("email", email);
                 editor.putString("number", number);
-                editor.putString("medInfo", medInfo);
+                editor.putString("addr", addr);
+                editor.putString("city", city);
+                editor.putString("state", state);
                 editor.commit();
 
                 runOnUiThread(new Runnable() {
@@ -135,6 +147,22 @@ public class Form extends Activity {
         } catch(Exception e) {
             System.out.println("Exception : " + e.getMessage());
         }
+    }
+
+    public void check() {
+        Form.this.runOnUiThread(new Runnable() {
+            public void run() {
+                AlertDialog.Builder builder = new AlertDialog.Builder(Form.this);
+                builder.setMessage("Box is checked.")
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        });
     }
 
     public void showAlert() {
