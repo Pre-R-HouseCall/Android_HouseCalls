@@ -8,9 +8,10 @@
         android:id="@+id/imgLogo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:src="@drawable/prer_logo"
+        android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="175dp"
-        android:src="@drawable/logo" />
+        android:layout_marginRight="50dp"
+        android:layout_marginLeft="50dp" />
 
 </RelativeLayout>
