@@ -92,7 +92,7 @@ public class Waitlist extends ActionBarActivity {
     private void createNotif() {
 
         mBuilder = new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.ic_launcher)
+                        .setSmallIcon(R.drawable.icon)
                         .setContentTitle("Waitroom Position")
                         .setContentText(msg);
 

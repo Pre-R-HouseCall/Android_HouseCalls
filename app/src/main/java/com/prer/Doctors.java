@@ -31,6 +31,7 @@ import static com.prer.R.layout.doctor_item;
 public class Doctors extends ActionBarActivity  {
     String username;
     SharedPreferences logPrefs;
+    SharedPreferences formPrefs;
     JSONArray json;
     ListView listView;
     DoctorAdapter adapter;
@@ -65,6 +66,7 @@ public class Doctors extends ActionBarActivity  {
 
         protected void onPostExecute(String result) {
             logPrefs = getSharedPreferences("loginDetails", 0);
+            formPrefs = getSharedPreferences("formDetails", 0);
             username = logPrefs.getString("username", null);
             try {
                 json = new JSONArray(result);
@@ -87,6 +89,9 @@ public class Doctors extends ActionBarActivity  {
                     SharedPreferences.Editor editor = logPrefs.edit();
                     editor.clear();
                     editor.commit();
+                    SharedPreferences.Editor edit = formPrefs.edit();
+                    edit.clear();
+                    edit.commit();
                     username = null;
                     Toast.makeText(Doctors.this, "Logged Out", Toast.LENGTH_SHORT).show();
 

@@ -46,7 +46,7 @@ public class Form extends ActionBarActivity {
         eAddr = (EditText) findViewById(R.id.formAddr);
         eCity = (EditText) findViewById(R.id.formCity);
         eState = (EditText) findViewById(R.id.formState);
-        eZip = (EditText) findViewById(R.id.formState);
+        eZip = (EditText) findViewById(R.id.formZipCode);
         eSymptoms = (EditText) findViewById(R.id.formSymptoms);
 
         SharedPreferences logPrefs = getSharedPreferences("loginDetails", 0);
@@ -137,8 +137,8 @@ public class Form extends ActionBarActivity {
                 editor.putString("number", number);
                 editor.putString("addr", addr);
                 editor.putString("city", city);
-                editor.putString("state", state);
                 editor.putString("zip", zip);
+                editor.putString("state", state);
                 editor.commit();
 
                 runOnUiThread(new Runnable() {

@@ -59,24 +59,20 @@ public class SignUp extends ActionBarActivity {
 
         checkBox = (CheckBox) findViewById(R.id.signUpCheckBox);
 
-/*        checkBox.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                if (((CheckBox) view).isChecked()) {
-                    check();
-                }
-            }
-        });
-*/
         b.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog = ProgressDialog.show(SignUp.this, "",
-                        "Adding user...", true);
-                new Thread(new Runnable() {
-                    public void run() {
-                        signUp();
-                    }
-                }).start();
+                if (checkBox.isChecked() == false) {
+                    showAlert2();
+                } else {
+                    dialog = ProgressDialog.show(SignUp.this, "",
+                            "Adding user...", true);
+                    new Thread(new Runnable() {
+                        public void run() {
+                            signUp();
+                        }
+                    }).start();
+                }
             }
         });
     }
@@ -127,7 +123,6 @@ public class SignUp extends ActionBarActivity {
 
                 startActivity(new Intent(SignUp.this, Login.class));
             }
-
         } catch (Exception e){
             dialog.dismiss();
             System.out.println("Exception : " + e.getMessage());
@@ -157,6 +152,23 @@ public class SignUp extends ActionBarActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(SignUp.this);
                 builder.setTitle("SignUp Error:");
                 builder.setMessage("Incomplete Sign Up. Try Again.")
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        });
+    }
+
+    public void showAlert2() {
+        SignUp.this.runOnUiThread(new Runnable() {
+            public void run() {
+                AlertDialog.Builder builder = new AlertDialog.Builder(SignUp.this);
+                builder.setTitle("SignUp Error:");
+                builder.setMessage("You Must Agree To The Disclaimer.")
                         .setCancelable(false)
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
