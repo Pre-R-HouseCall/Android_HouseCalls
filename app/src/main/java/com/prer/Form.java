@@ -26,8 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Form extends ActionBarActivity {
-    String name, email, number, addr, city, state;
-    EditText eName, eEmail, eNumber, eAddr, eCity, eState;
+    String name, email, number, addr, city, state, zip;
+    EditText eName, eEmail, eNumber, eAddr, eCity, eState, eZip;
     EditText eSymptoms;
     HttpPost httppost;
     HttpClient httpclient;
@@ -46,6 +46,7 @@ public class Form extends ActionBarActivity {
         eAddr = (EditText) findViewById(R.id.formAddr);
         eCity = (EditText) findViewById(R.id.formCity);
         eState = (EditText) findViewById(R.id.formState);
+        eZip = (EditText) findViewById(R.id.formState);
         eSymptoms = (EditText) findViewById(R.id.formSymptoms);
 
         SharedPreferences logPrefs = getSharedPreferences("loginDetails", 0);
@@ -60,6 +61,7 @@ public class Form extends ActionBarActivity {
             addr = formPrefs.getString("addr", null);
             city = formPrefs.getString("city", null);
             state = formPrefs.getString("state", null);
+            zip = formPrefs.getString("zip", null);
 
             eName.setText(name);
             eEmail.setText(email);
@@ -67,6 +69,7 @@ public class Form extends ActionBarActivity {
             eAddr.setText(addr);
             eCity.setText(city);
             eState.setText(state);
+            eZip.setText(zip);
         }
 
         CheckBox checkBox = (CheckBox) findViewById(R.id.checkBox);
@@ -101,6 +104,7 @@ public class Form extends ActionBarActivity {
             addr = eAddr.getText().toString().trim();
             city = eCity.getText().toString().trim();
             state = eState.getText().toString().trim();
+            zip = eZip.getText().toString().trim();
 
             httpclient=new DefaultHttpClient();
             // WRITE A SCRIPT AND PASS IT "docId" TO SEND THE FORM ONLY TO THAT DOCTOR
@@ -114,6 +118,7 @@ public class Form extends ActionBarActivity {
             nameValuePairs.add(new BasicNameValuePair("addr", addr));
             nameValuePairs.add(new BasicNameValuePair("city", city));
             nameValuePairs.add(new BasicNameValuePair("state", state));
+            nameValuePairs.add(new BasicNameValuePair("zip", zip));
             nameValuePairs.add(new BasicNameValuePair("symptoms", eSymptoms.getText().toString().trim()));
             nameValuePairs.add(new BasicNameValuePair("userID", String.valueOf(userID)));
             nameValuePairs.add(new BasicNameValuePair("docID", docId));
@@ -133,6 +138,7 @@ public class Form extends ActionBarActivity {
                 editor.putString("addr", addr);
                 editor.putString("city", city);
                 editor.putString("state", state);
+                editor.putString("zip", zip);
                 editor.commit();
 
                 runOnUiThread(new Runnable() {

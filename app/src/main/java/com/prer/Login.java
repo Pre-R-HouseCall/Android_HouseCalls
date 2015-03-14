@@ -23,6 +23,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -45,6 +46,7 @@ public class Login extends ActionBarActivity {
 	protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         b = (Button) findViewById(R.id.btnLogin);
         et = (EditText) findViewById(R.id.txtEmail);
@@ -61,15 +63,6 @@ public class Login extends ActionBarActivity {
                         login();
                     }
                 }).start();
-            }
-        });
-
-        Button back = (Button) findViewById(R.id.login_back_button);
-        back.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View view) {
-                Intent myIntent = new Intent(view.getContext(), Doctors.class);
-                startActivityForResult(myIntent, 0);
             }
         });
 
@@ -118,7 +111,7 @@ public class Login extends ActionBarActivity {
                 SharedPreferences.Editor spEdit = sp.edit();
                 spEdit.putString("username", username);
                 spEdit.putString("password", password);
-                spEdit.putInt("userID", json.getInt("id"));
+                spEdit.putInt("userID", json.getInt("UserId"));
                 spEdit.commit();
 
                 runOnUiThread(new Runnable() {

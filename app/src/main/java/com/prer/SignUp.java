@@ -21,32 +21,52 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class SignUp extends ActionBarActivity {
+    EditText eName, eEmail, eUser, ePass, eNumber, eAddr, eCity, eState, eZip;
     Button b;
-    EditText et,pass;
     TextView tv;
     HttpPost httppost;
-    StringBuffer buffer;
-    HttpResponse response;
     HttpClient httpclient;
     List<NameValuePair> nameValuePairs;
     ProgressDialog dialog = null;
+    CheckBox checkBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         b = (Button) findViewById(R.id.btnSignUp);
-        et = (EditText) findViewById(R.id.txtEmail0);
-        pass = (EditText) findViewById(R.id.txtPassword0);
         tv = (TextView)findViewById(R.id.tv0);
 
+        eName = (EditText) findViewById(R.id.signUpName);
+        eEmail = (EditText) findViewById(R.id.signUpEmail);
+        eUser = (EditText) findViewById(R.id.signUpUsername);
+        ePass = (EditText) findViewById(R.id.signUpPassword);
+        eNumber = (EditText) findViewById(R.id.signUpNumber);
+        eAddr = (EditText) findViewById(R.id.signUpAddr);
+        eCity = (EditText) findViewById(R.id.signUpCity);
+        eState = (EditText) findViewById(R.id.signUpState);
+        eZip = (EditText) findViewById(R.id.signUpZipCode);
+
+        checkBox = (CheckBox) findViewById(R.id.signUpCheckBox);
+
+/*        checkBox.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                if (((CheckBox) view).isChecked()) {
+                    check();
+                }
+            }
+        });
+*/
         b.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,15 +79,6 @@ public class SignUp extends ActionBarActivity {
                 }).start();
             }
         });
-
-        Button back = (Button) findViewById(R.id.signup_back_button);
-        back.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View view) {
-                Intent myIntent = new Intent(view.getContext(), Login.class);
-                startActivityForResult(myIntent, 0);
-            }
-        });
     }
 
     void signUp(){
@@ -77,8 +88,15 @@ public class SignUp extends ActionBarActivity {
             //add your data
             nameValuePairs = new ArrayList<NameValuePair>(2);
             // Always use the same variable name for posting i.e the android side variable name and php side variable name should be similar,
-            nameValuePairs.add(new BasicNameValuePair("username",et.getText().toString().trim()));  // $Edittext_value = $_POST['Edittext_value'];
-            nameValuePairs.add(new BasicNameValuePair("password",pass.getText().toString().trim()));
+            nameValuePairs.add(new BasicNameValuePair("username",eUser.getText().toString().trim()));  // $Edittext_value = $_POST['Edittext_value'];
+            nameValuePairs.add(new BasicNameValuePair("password",ePass.getText().toString().trim()));
+            nameValuePairs.add(new BasicNameValuePair("name",eName.getText().toString().trim()));
+            nameValuePairs.add(new BasicNameValuePair("email",eEmail.getText().toString().trim()));
+            nameValuePairs.add(new BasicNameValuePair("number",eNumber.getText().toString().trim()));
+            nameValuePairs.add(new BasicNameValuePair("addr",eAddr.getText().toString().trim()));
+            nameValuePairs.add(new BasicNameValuePair("city",eCity.getText().toString().trim()));
+            nameValuePairs.add(new BasicNameValuePair("state",eState.getText().toString().trim()));
+            nameValuePairs.add(new BasicNameValuePair("zip",eZip.getText().toString().trim()));
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
             //Execute HTTP Post Request
@@ -94,11 +112,13 @@ public class SignUp extends ActionBarActivity {
                 }
             });
 
-            System.out.println("return: " + response.equalsIgnoreCase("Row = 1. User Found\n"));
+            System.out.println("return: " + response.contains("User Found"));
 
-            if(response.equalsIgnoreCase("Row = 1. User Found\n") || response.equalsIgnoreCase("Missing Required field(s)\n")){
-                showAlert();
-            }else{
+            if (response.contains("User Found")) {
+                showAlert0();
+            } else if (response.contains("Missing Required field(s)")) {
+                showAlert1();
+            } else {
                 runOnUiThread(new Runnable() {
                     public void run() {
                         Toast.makeText(SignUp.this,"SignUp Success", Toast.LENGTH_SHORT).show();
@@ -108,18 +128,35 @@ public class SignUp extends ActionBarActivity {
                 startActivity(new Intent(SignUp.this, Login.class));
             }
 
-        }catch(Exception e){
+        } catch (Exception e){
             dialog.dismiss();
             System.out.println("Exception : " + e.getMessage());
         }
     }
 
-    public void showAlert() {
+    public void showAlert0() {
         SignUp.this.runOnUiThread(new Runnable() {
             public void run() {
                 AlertDialog.Builder builder = new AlertDialog.Builder(SignUp.this);
                 builder.setTitle("SignUp Error:");
-                builder.setMessage("Invalid Username/Password. Try Again.")
+                builder.setMessage("Username Already Exist. Try Again.")
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        });
+    }
+
+    public void showAlert1() {
+        SignUp.this.runOnUiThread(new Runnable() {
+            public void run() {
+                AlertDialog.Builder builder = new AlertDialog.Builder(SignUp.this);
+                builder.setTitle("SignUp Error:");
+                builder.setMessage("Incomplete Sign Up. Try Again.")
                         .setCancelable(false)
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {

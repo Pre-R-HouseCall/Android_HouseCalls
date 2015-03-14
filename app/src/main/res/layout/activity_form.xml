@@ -20,14 +20,15 @@
 	        android:text="Name of Patient"
 	        android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="#4f95ce"
-            android:layout_marginTop="5dp" />
+            android:layout_marginTop="5dp"
+            android:paddingLeft="7dp" />
 
 	    <EditText
             android:id="@+id/formName"
 	        android:layout_width="fill_parent"
 	        android:layout_height="match_parent"
             android:minHeight="30dp"
-	        android:inputType="text|textMultiLine"
+	        android:inputType="textMultiLine"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:background="@drawable/round_edittext"
@@ -42,7 +43,8 @@
             android:text="E-mail"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="#4f95ce"
-            android:layout_marginTop="5dp" />
+            android:layout_marginTop="5dp"
+            android:paddingLeft="7dp" />
 
         <EditText
             android:id="@+id/formEmail"
@@ -64,7 +66,8 @@
 	        android:text="Phone"
 	        android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="#4f95ce"
-            android:layout_marginTop="5dp" />
+            android:layout_marginTop="5dp"
+            android:paddingLeft="7dp" />
 
 	    <EditText
             android:id="@+id/formNumber"
@@ -89,7 +92,8 @@
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_marginTop="5dp" />
+            android:layout_marginTop="5dp"
+            android:paddingLeft="5dp" />
 
         <TextView
             android:layout_width="fill_parent"
@@ -97,10 +101,34 @@
             android:text="Street Address"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="#4f95ce"
-            android:layout_marginTop="5dp" />
+            android:layout_marginTop="5dp"
+            android:paddingLeft="7dp" />
 
         <EditText
             android:id="@+id/formAddr"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="30dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/round_edittext"
+            android:paddingLeft="7dp"
+            android:inputType="textMultiLine"
+            android:paddingTop="5dp"
+            android:paddingRight="7dp"
+            android:paddingBottom="5dp" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text="City"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#4f95ce"
+            android:layout_marginTop="5dp"
+            android:paddingLeft="7dp" />
+
+        <EditText
+            android:id="@+id/formCity"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:minHeight="30dp"
@@ -122,16 +150,17 @@
             <TextView
                 android:layout_width="59dp"
                 android:layout_height="fill_parent"
-                android:text="City"
+                android:text="State"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="#4f95ce"
                 android:layout_row="0"
                 android:layout_column="0"
-                android:layout_marginTop="5dp" />
+                android:layout_marginTop="5dp"
+                android:paddingLeft="7dp" />
 
             <EditText
-                android:id="@+id/formCity"
-                android:layout_width="221dp"
+                android:id="@+id/formState"
+                android:layout_width="174dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/round_edittext"
                 android:layout_marginTop="5dp"
@@ -146,12 +175,13 @@
             <TextView
                 android:layout_width="82dp"
                 android:layout_height="match_parent"
-                android:text="State"
+                android:text="ZIP Code"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="#4f95ce"
                 android:layout_row="0"
                 android:layout_column="2"
-                android:layout_marginTop="5dp" />
+                android:layout_marginTop="5dp"
+                android:paddingLeft="7dp" />
 
             <TextView
                 android:layout_width="21dp"
@@ -162,8 +192,8 @@
                 android:singleLine="false" />
 
             <EditText
-                android:id="@+id/formState"
-                android:layout_width="58dp"
+                android:id="@+id/formZipCode"
+                android:layout_width="105dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/round_edittext"
                 android:layout_column="2"
@@ -172,7 +202,8 @@
                 android:paddingRight="7dp"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp"
-                android:paddingLeft="7dp" />
+                android:paddingLeft="7dp"
+                android:inputType="number" />
         </GridLayout>
 
         <TextView
@@ -181,7 +212,8 @@
 	        android:text="Briefly tell us what&apos;s wrong:"
 	        android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="#4f95ce"
-            android:layout_marginTop="10dp" />
+            android:layout_marginTop="10dp"
+            android:paddingLeft="7dp" />
 
 	    <EditText
             android:id="@+id/formSymptoms"
@@ -203,10 +235,10 @@
 	        android:layout_width="fill_parent"
 	        android:layout_height="fill_parent"
 	        android:text="Request Call"
-	        android:textAppearance="?android:attr/textAppearanceMedium"
+	        android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="#ffffffff"
             android:background="@drawable/rounded_button"
-            android:layout_marginTop="15dp" />
+            android:layout_marginTop="20dp" />
 
         <TextView
             android:id="@+id/tv"
