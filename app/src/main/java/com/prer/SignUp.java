@@ -13,23 +13,31 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
+import android.content.res.Configuration;
+import android.graphics.Color;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class SignUp extends ActionBarActivity {
-    EditText eName, eEmail, eUser, ePass, eNumber, eAddr, eCity, eState, eZip;
+public class SignUp extends ActionBarActivity implements AdapterView.OnItemClickListener {
+    EditText eName, eEmail, ePass, eNumber, eAddr, eCity, eState, eZip;
     Button b;
     TextView tv;
     HttpPost httppost;
@@ -37,6 +45,10 @@ public class SignUp extends ActionBarActivity {
     List<NameValuePair> nameValuePairs;
     ProgressDialog dialog = null;
     CheckBox checkBox;
+    private DrawerLayout drawerLayout;
+    private ListView listView;
+    private ActionBarDrawerToggle drawerListener;
+    private NavAdapter myAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,12 +56,25 @@ public class SignUp extends ActionBarActivity {
         setContentView(R.layout.activity_sign_up);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout2);
+        listView = (ListView) findViewById(R.id.drawerList2);
+
+        myAdapter = new NavAdapter(this);
+        listView.setAdapter(myAdapter);
+        listView.setOnItemClickListener(this);
+
+        drawerListener = new ActionBarDrawerToggle(this, drawerLayout,
+                R.string.drawer_open, R.string.drawer_close) {
+        };
+
+        drawerLayout.setDrawerListener(drawerListener);
+        drawerLayout.setScrimColor(Color.TRANSPARENT);
+
         b = (Button) findViewById(R.id.btnSignUp);
         tv = (TextView)findViewById(R.id.tv0);
 
         eName = (EditText) findViewById(R.id.signUpName);
         eEmail = (EditText) findViewById(R.id.signUpEmail);
-        eUser = (EditText) findViewById(R.id.signUpUsername);
         ePass = (EditText) findViewById(R.id.signUpPassword);
         eNumber = (EditText) findViewById(R.id.signUpNumber);
         eAddr = (EditText) findViewById(R.id.signUpAddr);
@@ -75,6 +100,64 @@ public class SignUp extends ActionBarActivity {
                 }
             }
         });
+
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setCustomView(R.layout.action_bar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        drawerListener.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        drawerListener.syncState();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (drawerListener.onOptionsItemSelected(item)) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        selectItem(position);
+    }
+
+    public void selectItem(int position) {
+        // update the main content by replacing fragments
+        // update selected item and title, then close the drawer
+        listView.setItemChecked(position, true);
+        listView.setSelection(position);
+//            setTitle(navMenuTitles[position]);
+        drawerLayout.closeDrawer(listView);
+
+        switch (position) {
+            case 0:
+                startActivity(new Intent(this, Doctors.class));
+                break;
+            case 1:
+                startActivity(new Intent(this, Login.class));
+                break;
+            case 2:
+                startActivity(new Intent(this, SignUp.class));
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    public void setTitle(String title) {
+        getSupportActionBar().setTitle(title);
     }
 
     void signUp(){
@@ -84,7 +167,6 @@ public class SignUp extends ActionBarActivity {
             //add your data
             nameValuePairs = new ArrayList<NameValuePair>(2);
             // Always use the same variable name for posting i.e the android side variable name and php side variable name should be similar,
-            nameValuePairs.add(new BasicNameValuePair("username",eUser.getText().toString().trim()));  // $Edittext_value = $_POST['Edittext_value'];
             nameValuePairs.add(new BasicNameValuePair("password",ePass.getText().toString().trim()));
             nameValuePairs.add(new BasicNameValuePair("name",eName.getText().toString().trim()));
             nameValuePairs.add(new BasicNameValuePair("email",eEmail.getText().toString().trim()));
@@ -108,9 +190,7 @@ public class SignUp extends ActionBarActivity {
                 }
             });
 
-            System.out.println("return: " + response.contains("User Found"));
-
-            if (response.contains("User Found")) {
+            if (response.contains("Email Already Exists")) {
                 showAlert0();
             } else if (response.contains("Missing Required field(s)")) {
                 showAlert1();

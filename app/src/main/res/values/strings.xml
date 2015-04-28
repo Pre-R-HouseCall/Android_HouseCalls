@@ -21,5 +21,25 @@
     <string name="title_activity_sign_up">SignUp</string>
     <string name="title_activity_tutorial">TutorialActivity</string>
     <string name="title_activity_bio">Bio</string>
+    <string name="title_activity_waitroom">Waitroom</string>
+    <string name="title_activity_drawer">Drawer</string>
+
+    <string-array name="Guestlist">
+        <item> Doctors </item>
+        <item> Login </item>
+        <item> Sign Up </item>
+    </string-array>
+
+    <string-array name="Userlist">
+        <item> Doctors </item>
+        <item> Waitroom </item>
+        <item> Logout </item>
+    </string-array>
+
+    <string name="drawer_open">Open Navigation Drawer</string>
+    <string name="drawer_close">Close Navigation Drawer</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 
 </resources>

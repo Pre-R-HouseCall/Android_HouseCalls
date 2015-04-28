@@ -1,0 +1,98 @@
+<LinearLayout android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:weightSum="1"
+    android:scrollbarStyle="outsideOverlay"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <GridLayout
+            android:layout_width="72dp"
+            android:layout_height="80dp"
+            android:columnCount="3"
+            android:rowCount="2"
+            android:layout_marginBottom="10dp"
+            android:id="@+id/doctor"
+            android:longClickable="true"
+            android:layout_weight="0.91">
+
+            <ImageView
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:id="@+id/imageView2"
+                android:src="@drawable/available"
+                android:layout_column="0"
+                android:layout_marginRight="37px"
+                android:layout_gravity="bottom"
+                android:layout_row="0" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text=""
+                android:id="@+id/name"
+                android:layout_row="0"
+                android:layout_column="1"
+                android:textStyle="bold"
+                android:textSize="17dp"
+                android:typeface="sans"
+                android:textColor="#ff000000" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/distance"
+                android:layout_row="1"
+                android:layout_column="1"
+                android:textSize="16dp"
+                android:textStyle="bold"
+                android:textColor="#ff000000"
+                android:layout_marginBottom="5dp" />
+
+        </GridLayout>
+
+        <ImageButton
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:id="@+id/profile"
+            android:layout_row="0"
+            android:layout_column="1"
+            android:src="@drawable/doctor_profile"
+            android:scaleType="fitXY"
+            android:layout_rowSpan="3"
+            android:layout_columnSpan="1"
+            android:layout_gravity="right"
+            android:background="#00ffffff" />
+
+        <ImageButton
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:id="@+id/form"
+            android:layout_row="0"
+            android:layout_column="2"
+            android:src="@drawable/request_doctor"
+            android:scaleType="centerInside"
+            android:layout_rowSpan="3"
+            android:layout_columnSpan="1"
+            android:background="#47ffffff"
+            android:clickable="true"
+            android:onClick="setContentView" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/divider" />
+
+</LinearLayout>
+

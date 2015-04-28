@@ -1,6 +1,9 @@
 package com.prer;
 
 import android.app.AlertDialog;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,14 +14,17 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.http.NameValuePair;
@@ -33,10 +39,7 @@ import org.apache.http.message.BasicNameValuePair;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Form extends ActionBarActivity implements AdapterView.OnItemClickListener {
-    String name, email, number, addr, city, state, zip;
-    EditText eName, eEmail, eNumber, eAddr, eCity, eState, eZip;
-    EditText eSymptoms;
+public class Waitroom extends ActionBarActivity implements AdapterView.OnItemClickListener {
     HttpPost httppost;
     HttpClient httpclient;
     List<NameValuePair> nameValuePairs;
@@ -47,32 +50,22 @@ public class Form extends ActionBarActivity implements AdapterView.OnItemClickLi
     private NavAdapter myAdapter;
     SharedPreferences logPrefs;
     SharedPreferences formPrefs;
+    String email;
     int status;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_form);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_waitroom);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-
-        eName = (EditText) findViewById(R.id.formName);
-        eEmail = (EditText) findViewById(R.id.formEmail);
-        eNumber = (EditText) findViewById(R.id.formNumber);
-        eAddr = (EditText) findViewById(R.id.formAddr);
-        eCity = (EditText) findViewById(R.id.formCity);
-        eState = (EditText) findViewById(R.id.formState);
-        eZip = (EditText) findViewById(R.id.formZipCode);
-        eSymptoms = (EditText) findViewById(R.id.formSymptoms);
 
         logPrefs = getSharedPreferences("loginDetails", 0);
         userID = logPrefs.getInt("userID", -1);
-
         formPrefs = getSharedPreferences("formDetails", 0);
-        name = formPrefs.getString("name", null);
         status = formPrefs.getInt("status", -1);
 
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout5);
-        listView = (ListView) findViewById(R.id.drawerList5);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout3);
+        listView = (ListView) findViewById(R.id.drawerList3);
 
         myAdapter = new NavAdapter(this);
         listView.setAdapter(myAdapter);
@@ -85,40 +78,22 @@ public class Form extends ActionBarActivity implements AdapterView.OnItemClickLi
         drawerLayout.setDrawerListener(drawerListener);
         drawerLayout.setScrimColor(Color.TRANSPARENT);
 
-        if (name != null) {
-            email = formPrefs.getString("email", null);
-            number = formPrefs.getString("number", null);
-            addr = formPrefs.getString("addr", null);
-            city = formPrefs.getString("city", null);
-            state = formPrefs.getString("state", null);
-            zip = formPrefs.getString("zip", null);
-
-            eName.setText(name);
-            eEmail.setText(email);
-            eNumber.setText(number);
-            eAddr.setText(addr);
-            eCity.setText(city);
-            eState.setText(state);
-            eZip.setText(zip);
-        }
-
-        CheckBox checkBox = (CheckBox) findViewById(R.id.checkBox);
-        checkBox.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                if (((CheckBox) view).isChecked()) {
-                    check();
-                }
-            }
-        });
-
-        Button callBtn = (Button) findViewById(R.id.callBtn);
-        callBtn.setOnClickListener(new View.OnClickListener() {
+        Button withdrawBtn = (Button) findViewById(R.id.btnWithdraw);
+        withdrawBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 new Thread(new Runnable() {
                     public void run() {
-                        form();
+                        withdraw();
                     }
                 }).start();
+            }
+        });
+
+        Button updateFormBtn = (Button) findViewById(R.id.btnUpdateForm);
+        updateFormBtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                Intent myIntent = new Intent(view.getContext(), Form.class);
+                startActivityForResult(myIntent, 0);
             }
         });
 
@@ -170,8 +145,6 @@ public class Form extends ActionBarActivity implements AdapterView.OnItemClickLi
                     startActivity(new Intent(this, Waitroom.class));
                 else if (status == -1)
                     startActivity(new Intent(this, Login.class));
-                else
-                    Toast.makeText(Form.this, "You Have Not Requested A Call", Toast.LENGTH_SHORT).show();
                 break;
             case 2:
                 if (userID == -1) {
@@ -183,7 +156,6 @@ public class Form extends ActionBarActivity implements AdapterView.OnItemClickLi
                     SharedPreferences.Editor edit = formPrefs.edit();
                     edit.clear();
                     edit.commit();
-                    email = null;
 
                     startActivity(new Intent(this, Doctors.class));
                 }
@@ -194,35 +166,24 @@ public class Form extends ActionBarActivity implements AdapterView.OnItemClickLi
         }
     }
 
-    void form() {
+    public void setTitle(String title) {
+        getSupportActionBar().setTitle(title);
+    }
+
+    void withdraw() {
         try {
-            Intent intent = getIntent();
-            String docId = intent.getStringExtra("docId");
+//            Intent intent = getActivity().getIntent();
+//            String docId = intent.getStringExtra("docId");
 
-            name = eName.getText().toString().trim();
-            email = eEmail.getText().toString().trim();
-            number = eNumber.getText().toString().trim();
-            addr = eAddr.getText().toString().trim();
-            city = eCity.getText().toString().trim();
-            state = eState.getText().toString().trim();
-            zip = eZip.getText().toString().trim();
-
-            httpclient=new DefaultHttpClient();
+            httpclient = new DefaultHttpClient();
             // WRITE A SCRIPT AND PASS IT "docId" TO SEND THE FORM ONLY TO THAT DOCTOR
-            httppost= new HttpPost("http://54.191.98.90/api/test1/add_form.php"); // make sure the url is correct.
+            httppost = new HttpPost("http://54.191.98.90/api/test1/delete_form.php"); // make sure the url is correct.
             //add your data
             nameValuePairs = new ArrayList<NameValuePair>(2);
             // Always use the same variable name for posting i.e the android side variable name and php side variable name should be similar,
-            nameValuePairs.add(new BasicNameValuePair("name", name));  // $Edittext_value = $_POST['Edittext_value'];
-            nameValuePairs.add(new BasicNameValuePair("email", email));
-            nameValuePairs.add(new BasicNameValuePair("number", number));
-            nameValuePairs.add(new BasicNameValuePair("addr", addr));
-            nameValuePairs.add(new BasicNameValuePair("city", city));
-            nameValuePairs.add(new BasicNameValuePair("state", state));
-            nameValuePairs.add(new BasicNameValuePair("zip", zip));
-            nameValuePairs.add(new BasicNameValuePair("symptoms", eSymptoms.getText().toString().trim()));
+
             nameValuePairs.add(new BasicNameValuePair("userID", String.valueOf(userID)));
-            nameValuePairs.add(new BasicNameValuePair("docID", docId));
+//            nameValuePairs.add(new BasicNameValuePair("docID", docId));
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
             //Execute HTTP Post Request
@@ -230,55 +191,32 @@ public class Form extends ActionBarActivity implements AdapterView.OnItemClickLi
             final String response = httpclient.execute(httppost, responseHandler);
             System.out.println(response);
 
-            if (response.contains("Form added") || response.contains("Form updated")) {
+            if (response.contains("Form deleted")) {
                 SharedPreferences pref = getSharedPreferences("formDetails", 0);
                 SharedPreferences.Editor editor = pref.edit();
-                editor.putString("name", name);
-                editor.putString("email", email);
-                editor.putString("number", number);
-                editor.putString("addr", addr);
-                editor.putString("city", city);
-                editor.putString("zip", zip);
-                editor.putString("state", state);
-                editor.putInt("status", 1);
+                editor.putInt("status", 0);
                 editor.commit();
 
                 runOnUiThread(new Runnable() {
                     public void run() {
-                        Toast.makeText(Form.this, "Form Sent", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Waitroom.this, "Form Withdrawn", Toast.LENGTH_SHORT).show();
                     }
                 });
-                startActivity(new Intent(Form.this, Waitroom.class));
+                startActivity(new Intent(Waitroom.this, Doctors.class));
             } else {
                 showAlert();
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             System.out.println("Exception : " + e.getMessage());
         }
     }
 
-    public void check() {
-        Form.this.runOnUiThread(new Runnable() {
-            public void run() {
-                AlertDialog.Builder builder = new AlertDialog.Builder(Form.this);
-                builder.setMessage("Box is checked.")
-                        .setCancelable(false)
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                            }
-                        });
-                AlertDialog alert = builder.create();
-                alert.show();
-            }
-        });
-    }
-
     public void showAlert() {
-        Form.this.runOnUiThread(new Runnable() {
+        runOnUiThread(new Runnable() {
             public void run() {
-                AlertDialog.Builder builder = new AlertDialog.Builder(Form.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(Waitroom.this);
                 builder.setTitle("Error: ");
-                builder.setMessage("Missing Name, Number, or Symptoms. Try Again.")
+                builder.setMessage("Form failed to be withdrawn.")
                         .setCancelable(false)
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {

@@ -1,11 +1,18 @@
 package com.prer;
 
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.AsyncTask;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.view.MenuItem;
 import android.view.View;
 import android.os.Bundle;
 import android.content.Intent;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -26,15 +33,19 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static com.prer.R.layout.doctor_item;
 
-public class Doctors extends ActionBarActivity  {
-    String username;
+public class Doctors extends ActionBarActivity implements AdapterView.OnItemClickListener {
+    String email;
     SharedPreferences logPrefs;
     SharedPreferences formPrefs;
     JSONArray json;
     ListView listView;
     DoctorAdapter adapter;
+    private DrawerLayout drawerLayout;
+    private ListView drawerView;
+    private ActionBarDrawerToggle drawerListener;
+    private NavAdapter myAdapter;
+    int status;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +54,75 @@ public class Doctors extends ActionBarActivity  {
         JSONAsyncTask task = new JSONAsyncTask();
         // Execute task that grabs all doctors
         task.execute(new String[] { "http://54.191.98.90/api/ios_connect/getAllDoctors.php" });
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        drawerListener.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (drawerListener.onOptionsItemSelected(item)) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        selectItem(position);
+    }
+
+    public void selectItem(int position) {
+        // update the main content by replacing fragments
+        // update selected item and title, then close the drawer
+        drawerView.setItemChecked(position, true);
+        drawerView.setSelection(position);
+//            setTitle(navMenuTitles[position]);
+        drawerLayout.closeDrawer(drawerView);
+
+        switch (position) {
+            case 0:
+                startActivity(new Intent(this, Doctors.class));
+                break;
+            case 1:
+                if (status == 1)
+                    startActivity(new Intent(this, Waitroom.class));
+                else if (status == -1)
+                    startActivity(new Intent(this, Login.class));
+                else
+                    Toast.makeText(Doctors.this, "You Have Not Requested A Call", Toast.LENGTH_SHORT).show();
+                break;
+            case 2:
+                if (email == null) {
+                    startActivity(new Intent(this, SignUp.class));
+                } else {
+                    SharedPreferences.Editor editor = logPrefs.edit();
+                    editor.clear();
+                    editor.commit();
+                    SharedPreferences.Editor edit = formPrefs.edit();
+                    edit.clear();
+                    edit.commit();
+                    email = null;
+
+                    startActivity(new Intent(this, Doctors.class));
+                }
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    public void setTitle(String title) {
+        getSupportActionBar().setTitle(title);
     }
 
     private class JSONAsyncTask extends AsyncTask<String, Void, String> {
@@ -67,12 +147,14 @@ public class Doctors extends ActionBarActivity  {
         protected void onPostExecute(String result) {
             logPrefs = getSharedPreferences("loginDetails", 0);
             formPrefs = getSharedPreferences("formDetails", 0);
-            username = logPrefs.getString("username", null);
+            email = logPrefs.getString("email", null);
+            status = formPrefs.getInt("status", -1);
+
             try {
                 json = new JSONArray(result);
                 setContentView(R.layout.activity_doctor_list);
                 listView = (ListView) findViewById(R.id.listView);
-                adapter = new DoctorAdapter(Doctors.this, json, username, logPrefs);
+                adapter = new DoctorAdapter(Doctors.this, json, email, logPrefs);
 
                 for(int i =0; i < json.length(); i++) {
                     adapter.getView(i, null, null);
@@ -92,10 +174,10 @@ public class Doctors extends ActionBarActivity  {
                     SharedPreferences.Editor edit = formPrefs.edit();
                     edit.clear();
                     edit.commit();
-                    username = null;
+                    email = null;
                     Toast.makeText(Doctors.this, "Logged Out", Toast.LENGTH_SHORT).show();
 
-                    adapter = new DoctorAdapter(Doctors.this, json, username, logPrefs);
+                    adapter = new DoctorAdapter(Doctors.this, json, email, logPrefs);
                     listView.setAdapter(adapter);
                 }
             });
@@ -108,6 +190,27 @@ public class Doctors extends ActionBarActivity  {
                     startActivityForResult(myIntent, 0);
                 }
             });
+
+
+            drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout0);
+            drawerView = (ListView) findViewById(R.id.drawerList0);
+
+            myAdapter = new NavAdapter(Doctors.this);
+            drawerView.setAdapter(myAdapter);
+            drawerView.setOnItemClickListener(Doctors.this);
+
+            drawerListener = new ActionBarDrawerToggle(Doctors.this, drawerLayout,
+                    R.string.drawer_open, R.string.drawer_close) {
+            };
+
+            drawerLayout.setDrawerListener(drawerListener);
+            drawerLayout.setScrimColor(Color.TRANSPARENT);
+
+            getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+            getSupportActionBar().setCustomView(R.layout.action_bar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+            drawerListener.syncState();
         }
     }
 }

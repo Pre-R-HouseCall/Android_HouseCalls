@@ -26,14 +26,19 @@ import static java.lang.Integer.parseInt;
 public class DoctorAdapter extends BaseAdapter{
     Context context;
     JSONArray content;
-    String username;
+    String email;
     SharedPreferences logPrefs;
+    SharedPreferences formPrefs;
+    int status;
 
-    public DoctorAdapter(Context context, JSONArray content, String username, SharedPreferences logPrefs) {
+    public DoctorAdapter(Context context, JSONArray content, String email, SharedPreferences logPrefs) {
         this.context = context;
         this.content = content;
-        this.username = username;
+        this.email = email;
         this.logPrefs = logPrefs;
+
+        formPrefs = context.getSharedPreferences("formDetails", 0);
+        status = formPrefs.getInt("status", -1);
     }
 
     @Override
@@ -61,7 +66,7 @@ public class DoctorAdapter extends BaseAdapter{
         int id = -1;
         String str_id = null;
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.doctor_item, parent, false);
+            convertView = LayoutInflater.from(context).inflate(R.layout.activity_doctor_item, parent, false);
         }
         JSONObject jsonObject = null;
         TextView docName = (TextView) convertView.findViewById(R.id.name);
@@ -83,9 +88,13 @@ public class DoctorAdapter extends BaseAdapter{
         final String finalStr_id = str_id;
         form.setOnClickListener(new View.OnClickListener() {
             Intent myIntent;
+
             public void onClick(View view) {
-                if (username != null) {
+                if (email != null && status != 1) {
                     myIntent = new Intent(context, Form.class);
+                } else if (status == 1) {
+                    Toast.makeText(context, "You Have Already Requested A Call. Check the Waitroom.", Toast.LENGTH_SHORT).show();
+                    return;
                 } else {
                     myIntent = new Intent(context, Login.class);
                 }

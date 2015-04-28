@@ -2,13 +2,22 @@ package com.prer;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -22,18 +31,28 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 
-public class Bio extends ActionBarActivity {
-    String username;
+public class Bio extends ActionBarActivity implements AdapterView.OnItemClickListener {
+    String email;
     Intent myIntent;
     String docId;
     JSONObject json;
+    private DrawerLayout drawerLayout;
+    private ListView drawerView;
+    private ActionBarDrawerToggle drawerListener;
+    private NavAdapter myAdapter;
+    SharedPreferences logPrefs;
+    SharedPreferences formPrefs;
+    int status;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        SharedPreferences logPrefs = getSharedPreferences("loginDetails", 0);
-        username = logPrefs.getString("username", null);
+        logPrefs = getSharedPreferences("loginDetails", 0);
+        email = logPrefs.getString("email", null);
+
+        formPrefs = getSharedPreferences("formDetails", 0);
+        status = formPrefs.getInt("status", -1);
 
         Intent intent = getIntent();
         docId = intent.getStringExtra("docId");
@@ -41,6 +60,75 @@ public class Bio extends ActionBarActivity {
         System.out.println("Bio Page - docId = " + docId);
         JSONAsyncTask task = new JSONAsyncTask();
         task.execute(new String[] { "http://54.191.98.90/api/bioTest/bioQuery.php?doctorID=" + docId });
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        drawerListener.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (drawerListener.onOptionsItemSelected(item)) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        selectItem(position);
+    }
+
+    public void selectItem(int position) {
+        // update the main content by replacing fragments
+        // update selected item and title, then close the drawer
+        drawerView.setItemChecked(position, true);
+        drawerView.setSelection(position);
+//            setTitle(navMenuTitles[position]);
+        drawerLayout.closeDrawer(drawerView);
+
+        switch (position) {
+            case 0:
+                startActivity(new Intent(this, Doctors.class));
+                break;
+            case 1:
+                if (status == 1)
+                    startActivity(new Intent(this, Waitroom.class));
+                else if (status == -1)
+                    startActivity(new Intent(this, Login.class));
+                else
+                    Toast.makeText(Bio.this, "You Have Not Requested A Call", Toast.LENGTH_SHORT).show();
+                break;
+            case 2:
+                if (email == null) {
+                    startActivity(new Intent(this, SignUp.class));
+                } else {
+                    SharedPreferences.Editor editor = logPrefs.edit();
+                    editor.clear();
+                    editor.commit();
+                    SharedPreferences.Editor edit = formPrefs.edit();
+                    edit.clear();
+                    edit.commit();
+                    email = null;
+
+                    startActivity(new Intent(this, Doctors.class));
+                }
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    public void setTitle(String title) {
+        getSupportActionBar().setTitle(title);
     }
 
     private class JSONAsyncTask extends AsyncTask<String, Void, String> {
@@ -69,7 +157,6 @@ public class Bio extends ActionBarActivity {
                 TextView name = (TextView) findViewById(R.id.name);
                 TextView description = (TextView) findViewById(R.id.description);
                 Button form = (Button) findViewById(R.id.bio_form_button);
-                Button back = (Button) findViewById(R.id.bio_back_button);
                 Button donate = (Button) findViewById(R.id.donateBtn);
                 name.setText(json.getString("FirstName") + " " + json.getString("LastName"));
                 description.setText(json.getString("Description"));
@@ -77,8 +164,11 @@ public class Bio extends ActionBarActivity {
                 form.setOnClickListener(new View.OnClickListener() {
 
                     public void onClick(View view) {
-                        if (username != null) {
+                        if (email != null && status != 1) {
                             myIntent = new Intent(view.getContext(), Form.class);
+                        } else if (status == 1) {
+                            Toast.makeText(Bio.this, "You Have Already Requested A Call. Check the Waitroom.", Toast.LENGTH_SHORT).show();
+                            return;
                         } else {
                             myIntent = new Intent(view.getContext(), Login.class);
                         }
@@ -101,13 +191,25 @@ public class Bio extends ActionBarActivity {
                     }
                 });
 
-                back.setOnClickListener(new View.OnClickListener() {
+                drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout4);
+                drawerView = (ListView) findViewById(R.id.drawerList4);
 
-                    public void onClick(View view) {
-                        Intent myIntent = new Intent(view.getContext(), Doctors.class);
-                        startActivityForResult(myIntent, 0);
-                    }
-                });
+                myAdapter = new NavAdapter(Bio.this);
+                drawerView.setAdapter(myAdapter);
+                drawerView.setOnItemClickListener(Bio.this);
+
+                drawerListener = new ActionBarDrawerToggle(Bio.this, drawerLayout,
+                        R.string.drawer_open, R.string.drawer_close) {
+                };
+
+                drawerLayout.setDrawerListener(drawerListener);
+                drawerLayout.setScrimColor(Color.TRANSPARENT);
+
+                getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+                getSupportActionBar().setCustomView(R.layout.action_bar);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setHomeButtonEnabled(true);
+                drawerListener.syncState();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
