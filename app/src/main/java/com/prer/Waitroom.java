@@ -1,9 +1,6 @@
 package com.prer;
 
 import android.app.AlertDialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,17 +11,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.http.NameValuePair;
@@ -39,6 +31,7 @@ import org.apache.http.message.BasicNameValuePair;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class Waitroom extends ActionBarActivity implements AdapterView.OnItemClickListener {
     HttpPost httppost;
     HttpClient httpclient;
@@ -50,8 +43,8 @@ public class Waitroom extends ActionBarActivity implements AdapterView.OnItemCli
     private NavAdapter myAdapter;
     SharedPreferences logPrefs;
     SharedPreferences formPrefs;
-    String email;
     int status;
+    String dateTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +55,7 @@ public class Waitroom extends ActionBarActivity implements AdapterView.OnItemCli
         logPrefs = getSharedPreferences("loginDetails", 0);
         userID = logPrefs.getInt("userID", -1);
         formPrefs = getSharedPreferences("formDetails", 0);
-        status = formPrefs.getInt("status", -1);
+        dateTime = formPrefs.getString("dateTime", null);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout3);
         listView = (ListView) findViewById(R.id.drawerList3);
@@ -77,6 +70,12 @@ public class Waitroom extends ActionBarActivity implements AdapterView.OnItemCli
 
         drawerLayout.setDrawerListener(drawerListener);
         drawerLayout.setScrimColor(Color.TRANSPARENT);
+
+        new Thread(new Runnable() {
+            public void run() {
+                getStatus();
+            }
+        }).start();
 
         Button withdrawBtn = (Button) findViewById(R.id.btnWithdraw);
         withdrawBtn.setOnClickListener(new View.OnClickListener() {
@@ -170,6 +169,47 @@ public class Waitroom extends ActionBarActivity implements AdapterView.OnItemCli
         getSupportActionBar().setTitle(title);
     }
 
+    void getStatus() {
+        try {
+            httpclient = new DefaultHttpClient();
+            // WRITE A SCRIPT AND PASS IT "docId" TO SEND THE FORM ONLY TO THAT DOCTOR
+            httppost = new HttpPost("http://54.191.98.90/api/test1/waitroom.php"); // make sure the url is correct.
+            //add your data
+            nameValuePairs = new ArrayList<NameValuePair>(2);
+            // Always use the same variable name for posting i.e the android side variable name and php side variable name should be similar,
+
+            nameValuePairs.add(new BasicNameValuePair("userID", String.valueOf(userID)));
+            nameValuePairs.add(new BasicNameValuePair("dateTime", dateTime));
+            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+            System.out.println(userID + " " + dateTime);
+
+            //Execute HTTP Post Request
+            ResponseHandler<String> responseHandler = new BasicResponseHandler();
+            final String response = httpclient.execute(httppost, responseHandler);
+            System.out.println(response);
+
+            if (response.contains("1")) {
+
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        Toast.makeText(Waitroom.this, "You're Requested Has Been Answered. You May Request Another Call",
+                         Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                SharedPreferences.Editor editor = formPrefs.edit();
+                editor.putInt("status", 0);
+                editor.putString("dateTime", null);
+                editor.commit();
+
+                startActivity(new Intent(this, Doctors.class));
+            }
+        } catch (Exception e) {
+            System.out.println("Exception : " + e.getMessage());
+        }
+    }
+
     void withdraw() {
         try {
 //            Intent intent = getActivity().getIntent();
@@ -195,6 +235,7 @@ public class Waitroom extends ActionBarActivity implements AdapterView.OnItemCli
                 SharedPreferences pref = getSharedPreferences("formDetails", 0);
                 SharedPreferences.Editor editor = pref.edit();
                 editor.putInt("status", 0);
+                editor.putString("dateTime", null);
                 editor.commit();
 
                 runOnUiThread(new Runnable() {
