@@ -226,6 +226,7 @@ public class Form extends ActionBarActivity implements AdapterView.OnItemClickLi
             nameValuePairs.add(new BasicNameValuePair("userID", String.valueOf(userID)));
             nameValuePairs.add(new BasicNameValuePair("docID", docId));
             nameValuePairs.add(new BasicNameValuePair("status", "0")); // checks if there is an answered request
+            nameValuePairs.add(new BasicNameValuePair("dateTime", dateTime));
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
             //Execute HTTP Post Request

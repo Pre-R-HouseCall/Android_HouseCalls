@@ -223,7 +223,7 @@ public class Waitroom extends ActionBarActivity implements AdapterView.OnItemCli
             // Always use the same variable name for posting i.e the android side variable name and php side variable name should be similar,
 
             nameValuePairs.add(new BasicNameValuePair("userID", String.valueOf(userID)));
-//            nameValuePairs.add(new BasicNameValuePair("docID", docId));
+            nameValuePairs.add(new BasicNameValuePair("dateTime", dateTime));
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
             //Execute HTTP Post Request
