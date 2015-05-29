@@ -64,8 +64,8 @@
             android:label="@string/title_activity_waitroom" >
         </activity>
         <activity
-            android:name=".Drawer"
-            android:label="@string/title_activity_drawer" >
+            android:name=".Feedback"
+            android:label="Feedback" >
         </activity>
     </application>
 

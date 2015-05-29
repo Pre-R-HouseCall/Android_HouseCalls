@@ -41,6 +41,7 @@ public class Form extends ActionBarActivity implements AdapterView.OnItemClickLi
     HttpClient httpclient;
     List<NameValuePair> nameValuePairs;
     int userID;
+    int docID;
     private DrawerLayout drawerLayout;
     private ListView listView;
     private ActionBarDrawerToggle drawerListener;
@@ -72,6 +73,7 @@ public class Form extends ActionBarActivity implements AdapterView.OnItemClickLi
         name = formPrefs.getString("name", null);
         status = formPrefs.getInt("status", -1);
         dateTime = formPrefs.getString("dateTime", null);
+        docID = formPrefs.getInt("docID", -1);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout5);
         listView = (ListView) findViewById(R.id.drawerList5);
@@ -198,9 +200,6 @@ public class Form extends ActionBarActivity implements AdapterView.OnItemClickLi
 
     void form() {
         try {
-            Intent intent = getIntent();
-            String docId = intent.getStringExtra("docId");
-
             name = eName.getText().toString().trim();
             email = eEmail.getText().toString().trim();
             number = eNumber.getText().toString().trim();
@@ -224,10 +223,12 @@ public class Form extends ActionBarActivity implements AdapterView.OnItemClickLi
             nameValuePairs.add(new BasicNameValuePair("zip", zip));
             nameValuePairs.add(new BasicNameValuePair("symptoms", eSymptoms.getText().toString().trim()));
             nameValuePairs.add(new BasicNameValuePair("userID", String.valueOf(userID)));
-            nameValuePairs.add(new BasicNameValuePair("docID", docId));
+            nameValuePairs.add(new BasicNameValuePair("docID", String.valueOf(docID)));
             nameValuePairs.add(new BasicNameValuePair("status", "0")); // checks if there is an answered request
             nameValuePairs.add(new BasicNameValuePair("dateTime", dateTime));
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+            System.out.println(nameValuePairs);
 
             //Execute HTTP Post Request
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
@@ -236,6 +237,8 @@ public class Form extends ActionBarActivity implements AdapterView.OnItemClickLi
 
             int index = response.indexOf("\n");
             dateTime = response.substring(index + 1);
+
+            System.out.println("index: " + index + ", " + dateTime);
 
             if (!response.contains("Missing Name, Number, or Symptoms")) {
                 SharedPreferences pref = getSharedPreferences("formDetails", 0);
@@ -249,6 +252,7 @@ public class Form extends ActionBarActivity implements AdapterView.OnItemClickLi
                 editor.putString("state", state);
                 editor.putInt("status", 1);
                 editor.putString("dateTime", dateTime);
+                editor.putInt("docID", docID);
                 editor.commit();
 
                 runOnUiThread(new Runnable() {

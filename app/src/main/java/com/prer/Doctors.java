@@ -15,6 +15,8 @@ import android.content.Intent;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -39,14 +41,14 @@ public class Doctors extends ActionBarActivity implements AdapterView.OnItemClic
     SharedPreferences logPrefs;
     SharedPreferences formPrefs;
     JSONArray json;
-    ListView listView;
-    DoctorAdapter adapter;
+    ExpandableDoctorAdapter adapter;
+    ExpandableListView listView;
+    View curGroup;
     private DrawerLayout drawerLayout;
     private ListView drawerView;
     private ActionBarDrawerToggle drawerListener;
     private NavAdapter myAdapter;
     int status;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -153,44 +155,37 @@ public class Doctors extends ActionBarActivity implements AdapterView.OnItemClic
             try {
                 json = new JSONArray(result);
                 setContentView(R.layout.activity_doctor_list);
-                listView = (ListView) findViewById(R.id.listView);
-                adapter = new DoctorAdapter(Doctors.this, json, email, logPrefs);
+                listView = (ExpandableListView) findViewById(R.id.listView);
+                adapter = new ExpandableDoctorAdapter(Doctors.this, json, email, logPrefs);
 
                 for(int i =0; i < json.length(); i++) {
-                    adapter.getView(i, null, null);
+                    adapter.getGroupView(i, false, null, null);
+                    adapter.getChildView(i, 0, true, null, null);
                 }
-                listView.setAdapter(adapter);
+                //System.out.println("SETTING THE ADAPTER");
+                listView.setAdapter((ExpandableListAdapter) adapter);
+                //System.out.println("SET THE ADAPTER");
+                listView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+                    @Override
+                    public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                        System.out.println("Clicked a group");
+                        return false;
+                    }
+                });
+                listView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+
+                    @Override
+                    public boolean onChildClick(ExpandableListView parent, View v,
+                                                int groupPosition, int childPosition, long id) {
+                        System.out.println("Clicked a doctor");
+                        parent.expandGroup(groupPosition);
+                        return false;
+                    }
+                });
 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
-            Button logout = (Button) findViewById(R.id.logout);
-            logout.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View view) {
-                    SharedPreferences.Editor editor = logPrefs.edit();
-                    editor.clear();
-                    editor.commit();
-                    SharedPreferences.Editor edit = formPrefs.edit();
-                    edit.clear();
-                    edit.commit();
-                    email = null;
-                    Toast.makeText(Doctors.this, "Logged Out", Toast.LENGTH_SHORT).show();
-
-                    adapter = new DoctorAdapter(Doctors.this, json, email, logPrefs);
-                    listView.setAdapter(adapter);
-                }
-            });
-
-            Button back = (Button) findViewById(R.id.back_button);
-            back.setOnClickListener(new View.OnClickListener() {
-
-                public void onClick(View view) {
-                    Intent myIntent = new Intent(view.getContext(), Tutorial.class);
-                    startActivityForResult(myIntent, 0);
-                }
-            });
-
 
             drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout0);
             drawerView = (ListView) findViewById(R.id.drawerList0);

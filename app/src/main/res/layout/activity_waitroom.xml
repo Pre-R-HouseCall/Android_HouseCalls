@@ -24,28 +24,35 @@ android:layout_height="match_parent" >
             android:layout_height="match_parent"
             android:orientation="vertical" >
 
-            <TextView
-                android:id="@+id/waitroomPosition"
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="You are 5th in line for Dr. Slishman."
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="#FF0000" />
+                android:id="@+id/imageView3"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/submitted_checkmark" />
 
             <TextView
                 android:id="@+id/textView3"
-                android:layout_width="337dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:text="Approximately a 30 minute wait."
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:layout_marginTop="30dp"
+                android:text="Your form has been submitted."
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_marginBottom="30dp"
+                android:layout_gravity="center_horizontal"
+                android:textColor="#ffe64929" />
 
             <TextView
                 android:id="@+id/textView2"
-                android:layout_width="wrap_content"
+                android:layout_width="197dp"
                 android:layout_height="wrap_content"
-                android:text="Dr. Slishman will call you when he is free. Please fill out a pre-evaluation form while you wait."
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                android:text="Your doctor will contact\nyou shortly when they\nbecome available."
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="30dp"
+                android:inputType="textMultiLine"
+                android:gravity="center"
+                android:textColor="#ff000000" />
 
             <Button
                 android:id="@+id/btnWithdraw"

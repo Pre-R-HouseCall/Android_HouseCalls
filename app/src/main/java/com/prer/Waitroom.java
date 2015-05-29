@@ -172,7 +172,6 @@ public class Waitroom extends ActionBarActivity implements AdapterView.OnItemCli
     void getStatus() {
         try {
             httpclient = new DefaultHttpClient();
-            // WRITE A SCRIPT AND PASS IT "docId" TO SEND THE FORM ONLY TO THAT DOCTOR
             httppost = new HttpPost("http://54.191.98.90/api/test1/waitroom.php"); // make sure the url is correct.
             //add your data
             nameValuePairs = new ArrayList<NameValuePair>(2);
@@ -193,7 +192,7 @@ public class Waitroom extends ActionBarActivity implements AdapterView.OnItemCli
 
                 runOnUiThread(new Runnable() {
                     public void run() {
-                        Toast.makeText(Waitroom.this, "You're Requested Has Been Answered. You May Request Another Call",
+                        Toast.makeText(Waitroom.this, "You're Requested Has Been Answered. Please Provide Feedback And Make A Donation.",
                          Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -203,7 +202,7 @@ public class Waitroom extends ActionBarActivity implements AdapterView.OnItemCli
                 editor.putString("dateTime", null);
                 editor.commit();
 
-                startActivity(new Intent(this, Doctors.class));
+                startActivity(new Intent(this, Feedback.class));
             }
         } catch (Exception e) {
             System.out.println("Exception : " + e.getMessage());
@@ -212,11 +211,7 @@ public class Waitroom extends ActionBarActivity implements AdapterView.OnItemCli
 
     void withdraw() {
         try {
-//            Intent intent = getActivity().getIntent();
-//            String docId = intent.getStringExtra("docId");
-
             httpclient = new DefaultHttpClient();
-            // WRITE A SCRIPT AND PASS IT "docId" TO SEND THE FORM ONLY TO THAT DOCTOR
             httppost = new HttpPost("http://54.191.98.90/api/test1/delete_form.php"); // make sure the url is correct.
             //add your data
             nameValuePairs = new ArrayList<NameValuePair>(2);

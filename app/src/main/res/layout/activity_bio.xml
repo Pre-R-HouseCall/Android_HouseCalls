@@ -43,7 +43,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:textAppearance="?android:attr/textAppearanceListItemSmall"
-                    android:id="@+id/description"/>
+                    android:id="@+id/description"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp" />
 
                 <Button
                     android:id="@+id/bio_form_button"
@@ -52,7 +54,7 @@
                     android:layout_marginTop="10dp"
                     android:text="Fill Out Pre-Eval Form"
                     android:textColor="#ffffffff"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
                     android:background="@drawable/rounded_button"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginLeft="30dp"
@@ -62,10 +64,10 @@
                     android:id="@+id/donateBtn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="20dp"
                     android:textColor="#ffffffff"
                     android:text="Make a Donation"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
                     android:background="@drawable/rounded_button"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginLeft="30dp"

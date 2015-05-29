@@ -1,5 +1,8 @@
 package com.prer;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -13,50 +16,56 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-
-public class Bio extends ActionBarActivity implements AdapterView.OnItemClickListener {
-    String email;
-    Intent myIntent;
-    String docId;
+public class Feedback extends ActionBarActivity implements AdapterView.OnItemClickListener {
+    HttpPost httppost;
+    HttpClient httpclient;
+    List<NameValuePair> nameValuePairs;
+    int docID;
     JSONObject json;
     private DrawerLayout drawerLayout;
     private ListView drawerView;
     private ActionBarDrawerToggle drawerListener;
     private NavAdapter myAdapter;
-    SharedPreferences logPrefs;
     SharedPreferences formPrefs;
-    int status;
-    int docID;
+    String feedbackStr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        logPrefs = getSharedPreferences("loginDetails", 0);
-        email = logPrefs.getString("email", null);
+        setContentView(R.layout.activity_feedback);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         formPrefs = getSharedPreferences("formDetails", 0);
-        status = formPrefs.getInt("status", -1);
         docID = formPrefs.getInt("docID", -1);
 
-        System.out.println("Bio Page - docId = " + docID);
         JSONAsyncTask task = new JSONAsyncTask();
         task.execute(new String[] { "http://54.191.98.90/api/bioTest/bioQuery.php?doctorID=" + String.valueOf(docID) });
     }
@@ -98,29 +107,20 @@ public class Bio extends ActionBarActivity implements AdapterView.OnItemClickLis
                 startActivity(new Intent(this, Doctors.class));
                 break;
             case 1:
-                if (status == 1)
-                    startActivity(new Intent(this, Waitroom.class));
-                else if (status == -1)
-                    startActivity(new Intent(this, Login.class));
-                else
-                    Toast.makeText(Bio.this, "You Have Not Requested A Call", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Feedback.this, "You Have Not Requested A Call", Toast.LENGTH_SHORT).show();
                 break;
             case 2:
-                if (email == null) {
-                    startActivity(new Intent(this, SignUp.class));
-                } else {
-                    SharedPreferences.Editor editor = logPrefs.edit();
-                    editor.clear();
-                    editor.commit();
-                    SharedPreferences.Editor edit = formPrefs.edit();
-                    edit.clear();
-                    edit.commit();
-                    email = null;
+                SharedPreferences logPrefs = getSharedPreferences("loginDetails", 0);
+                SharedPreferences.Editor editor = logPrefs.edit();
+                editor.clear();
+                editor.commit();
 
-                    startActivity(new Intent(this, Doctors.class));
-                }
+                SharedPreferences.Editor edit = formPrefs.edit();
+                edit.clear();
+                edit.commit();
+
+                startActivity(new Intent(this, Doctors.class));
                 break;
-
             default:
                 break;
         }
@@ -152,35 +152,23 @@ public class Bio extends ActionBarActivity implements AdapterView.OnItemClickLis
         protected void onPostExecute(String result) {
             try {
                 json = new JSONObject(result);
-                setContentView(R.layout.activity_bio);
-                TextView name = (TextView) findViewById(R.id.name);
-                TextView description = (TextView) findViewById(R.id.description);
-                Button form = (Button) findViewById(R.id.bio_form_button);
-                Button donate = (Button) findViewById(R.id.donateBtn);
-                name.setText(json.getString("FirstName") + " " + json.getString("LastName"));
-                description.setText(json.getString("Description"));
+                Button feedbackBtn = (Button) findViewById(R.id.btnFeedback);
+                Button donate = (Button) findViewById(R.id.btnDonate);
 
-                form.setOnClickListener(new View.OnClickListener() {
-
+                feedbackBtn.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View view) {
-                        if (email != null && status != 1) {
-                            myIntent = new Intent(view.getContext(), Form.class);
-                        } else if (status == 1) {
-                            Toast.makeText(Bio.this, "You Have Already Requested A Call. Check the Waitroom.", Toast.LENGTH_SHORT).show();
-                            return;
-                        } else {
-                            myIntent = new Intent(view.getContext(), Login.class);
-                        }
-                        startActivityForResult(myIntent, 0);
+                        new Thread(new Runnable() {
+                            public void run() {
+                                feedback();
+                            }
+                        }).start();
                     }
                 });
 
                 donate.setOnClickListener(new View.OnClickListener() {
-
                     public void onClick(View view) {
                         try {
                             System.out.println(json.getString("DonateBtn"));
-
                             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(json.getString("DonateBtn")));
                             startActivity(browserIntent);
                         } catch (JSONException e) {
@@ -189,14 +177,14 @@ public class Bio extends ActionBarActivity implements AdapterView.OnItemClickLis
                     }
                 });
 
-                drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout4);
-                drawerView = (ListView) findViewById(R.id.drawerList4);
+                drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout6);
+                drawerView = (ListView) findViewById(R.id.drawerList6);
 
-                myAdapter = new NavAdapter(Bio.this);
+                myAdapter = new NavAdapter(Feedback.this);
                 drawerView.setAdapter(myAdapter);
-                drawerView.setOnItemClickListener(Bio.this);
+                drawerView.setOnItemClickListener(Feedback.this);
 
-                drawerListener = new ActionBarDrawerToggle(Bio.this, drawerLayout,
+                drawerListener = new ActionBarDrawerToggle(Feedback.this, drawerLayout,
                         R.string.drawer_open, R.string.drawer_close) {
                 };
 
@@ -212,5 +200,57 @@ public class Bio extends ActionBarActivity implements AdapterView.OnItemClickLis
                 e.printStackTrace();
             }
         }
+    }
+
+    void feedback() {
+        try {
+            EditText eFeedback = (EditText) findViewById(R.id.feedback);
+            feedbackStr = eFeedback.getText().toString().trim();
+
+            httpclient = new DefaultHttpClient();
+            httppost = new HttpPost("http://54.191.98.90/api/test1/add_feedback.php"); // make sure the url is correct.
+            //add your data
+            nameValuePairs = new ArrayList<NameValuePair>(2);
+            // Always use the same variable name for posting i.e the android side variable name and php side variable name should be similar,
+
+            nameValuePairs.add(new BasicNameValuePair("docID", String.valueOf(docID)));
+            nameValuePairs.add(new BasicNameValuePair("feedback", feedbackStr));
+            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+            //Execute HTTP Post Request
+            ResponseHandler<String> responseHandler = new BasicResponseHandler();
+            final String response = httpclient.execute(httppost, responseHandler);
+            System.out.println(response);
+
+            if (response.contains("Feedback Sent")) {
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        Toast.makeText(Feedback.this, "Feedback Sent", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                startActivity(new Intent(Feedback.this, Doctors.class));
+            } else {
+                showAlert();
+            }
+        } catch (Exception e) {
+            System.out.println("Exception : " + e.getMessage());
+        }
+    }
+
+    public void showAlert() {
+        Feedback.this.runOnUiThread(new Runnable() {
+            public void run() {
+                AlertDialog.Builder builder = new AlertDialog.Builder(Feedback.this);
+                builder.setTitle("Error.");
+                builder.setMessage("Feedback Box Is Empty. Try Again.")
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        });
     }
 }
