@@ -183,12 +183,15 @@ public class SignUp extends ActionBarActivity implements AdapterView.OnItemClick
             final String response = httpclient.execute(httppost, responseHandler);
 
             System.out.println("Response : " + response);
+
+/*
             runOnUiThread(new Runnable() {
                 public void run() {
                     tv.setText("Response from PHP : " + response);
                     dialog.dismiss();
                 }
             });
+*/
 
             if (response.contains("Email Already Exists")) {
                 showAlert0();

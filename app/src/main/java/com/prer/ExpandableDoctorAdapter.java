@@ -123,6 +123,7 @@ public class ExpandableDoctorAdapter extends BaseExpandableListAdapter{
 
         ImageButton form = (ImageButton) convertView.findViewById(R.id.form);
         ImageButton bio = (ImageButton) convertView.findViewById(R.id.profile);
+        TextView seeMore = (TextView) convertView.findViewById(R.id.seeMore);
 
         final int ndx = groupPosition;
 
@@ -138,8 +139,22 @@ public class ExpandableDoctorAdapter extends BaseExpandableListAdapter{
                     Toast.makeText(context, "You Have Already Requested A Call. Check the Waitroom.", Toast.LENGTH_SHORT).show();
                     return;
                 } else {
-                    myIntent = new Intent(context, Login.class);
+                    Toast.makeText(context, "You Must Be Logged In To Sent A Form.", Toast.LENGTH_SHORT).show();
+                    return;
                 }
+
+                SharedPreferences.Editor editor = formPrefs.edit();
+                editor.putInt("docID", ndx);
+                editor.commit();
+
+                context.startActivity(myIntent);
+            }
+        });
+
+        seeMore.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                System.out.println("group position: " + ndx);
+                Intent myIntent = new Intent(context, Bio.class);
 
                 SharedPreferences.Editor editor = formPrefs.edit();
                 editor.putInt("docID", ndx);

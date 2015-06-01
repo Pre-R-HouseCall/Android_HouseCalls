@@ -169,7 +169,8 @@ public class Bio extends ActionBarActivity implements AdapterView.OnItemClickLis
                             Toast.makeText(Bio.this, "You Have Already Requested A Call. Check the Waitroom.", Toast.LENGTH_SHORT).show();
                             return;
                         } else {
-                            myIntent = new Intent(view.getContext(), Login.class);
+                            Toast.makeText(Bio.this, "You Must Be Logged In To Sent A Form.", Toast.LENGTH_SHORT).show();
+                            return;
                         }
                         startActivityForResult(myIntent, 0);
                     }

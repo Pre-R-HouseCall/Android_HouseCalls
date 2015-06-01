@@ -54,16 +54,12 @@ public class Login extends ActionBarActivity implements AdapterView.OnItemClickL
     private ListView listView;
     private ActionBarDrawerToggle drawerListener;
     private NavAdapter myAdapter;
-    String docId;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-
-        Intent intent = getIntent();
-        docId = intent.getStringExtra("docId");
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout1);
         listView = (ListView) findViewById(R.id.drawerList1);
@@ -186,12 +182,14 @@ public class Login extends ActionBarActivity implements AdapterView.OnItemClickL
             final String response = httpclient.execute(httppost, responseHandler);
             System.out.println("Response : " + response);
 
+/*
             runOnUiThread(new Runnable() {
                 public void run() {
                     tv.setText("Response from PHP : " + response);
                     dialog.dismiss();
                 }
             });
+*/
 
             if(!response.equalsIgnoreCase("No Such User Found")){
                 JSONObject json = new JSONObject(response);
@@ -209,10 +207,7 @@ public class Login extends ActionBarActivity implements AdapterView.OnItemClickL
                     }
                 });
 
-                if (docId == null)
-                    startActivity(new Intent(Login.this, Doctors.class));
-                else
-                    startActivity(new Intent(Login.this, Form.class));
+                startActivity(new Intent(Login.this, Doctors.class));
             }else{
                 showAlert();
             }
